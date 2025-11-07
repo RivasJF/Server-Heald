@@ -17,4 +17,8 @@ export class AppService {
       }
     })
   }
+
+  async deletePrisma(){
+    return this.prisma.user.deleteMany();
+  }
 }

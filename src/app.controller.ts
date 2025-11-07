@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -13,5 +13,10 @@ export class AppController {
   @Post()
   createPrisma(@Body('name') name: string){
     return this.appService.createPrisma(name);
+  }
+
+  @Delete()
+  deletePrisma(){
+    return this.appService.deletePrisma();
   }
 }
