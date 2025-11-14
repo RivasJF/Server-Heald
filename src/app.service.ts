@@ -10,14 +10,6 @@ export class AppService {
     return this.prisma.user.findMany();
   }
 
-  async createPrisma(name: string){
-    return this.prisma.user.create({
-      data: {
-        name: name
-      }
-    })
-  }
-
   async deletePrisma(){
     return this.prisma.user.deleteMany();
   }

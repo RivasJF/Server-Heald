@@ -1,6 +1,10 @@
-import { User as UserPrisma } from "generated/prisma";
+import { $Enums, User as UserPrisma } from "generated/prisma";
 
 export class User implements UserPrisma{
-    id: number;
+    id: string;
     name: string;
+    email: string;
+    password: string;
+    role: $Enums.Role;
+    createAt: Date;
 }

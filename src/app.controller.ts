@@ -10,11 +10,6 @@ export class AppController {
     return this.appService.getPrisma();
   }
 
-  @Post()
-  createPrisma(@Body('name') name: string){
-    return this.appService.createPrisma(name);
-  }
-
   @Delete()
   deletePrisma(){
     return this.appService.deletePrisma();
