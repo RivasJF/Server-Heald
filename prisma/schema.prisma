@@ -34,7 +34,7 @@ model Doctor {
   id            String     @id @default(uuid())
   userId        String     @unique
   user          User       @relation(fields: [userId], references: [id])
-  speciality    String
+  speciality    String?
   biography           String?
   consultationTime Int      @default(20)
   createdAt     DateTime   @default(now())
