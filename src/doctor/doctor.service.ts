@@ -1,26 +1,42 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { Doctor } from 'generated/prisma';
 
 @Injectable()
 export class DoctorService {
-  create(createDoctorDto: CreateDoctorDto) {
-    return 'This action adds a new doctor';
+  constructor(private readonly prisma: PrismaService){}
+
+  async create(createDoctorDto: CreateDoctorDto): Promise<Doctor>  {
+    return await this.prisma.doctor.create({ data: createDoctorDto });
   }
 
-  findAll() {
-    return `This action returns all doctor`;
+  async findAll(): Promise<Doctor[]> {
+    return await this.prisma.doctor.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} doctor`;
+  async findOne(id: string): Promise<Doctor> {
+    const doctor = await this.prisma.doctor.findUnique({ where: { id } });
+    if (!doctor) {
+      throw new NotFoundException(`Doctor con id ${id} no encontrado`);
+    }
+    return doctor;
   }
 
-  update(id: number, updateDoctorDto: UpdateDoctorDto) {
-    return `This action updates a #${id} doctor`;
+  async update(id: string, updateDoctorDto: UpdateDoctorDto): Promise<Doctor> {
+    const existing = await this.prisma.doctor.findUnique({ where: { id } });
+    if (!existing) {
+      throw new NotFoundException(`Doctor con id ${id} no encontrado`);
+    }
+    return await this.prisma.doctor.update({ where: { id }, data: updateDoctorDto });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} doctor`;
+  async remove(id: string): Promise<Doctor> {
+    const existing = await this.prisma.doctor.findUnique({ where: { id } });
+    if (!existing) {
+      throw new NotFoundException(`Doctor con id ${id} no encontrado`);
+    }
+    return await this.prisma.doctor.delete({ where: { id } });
   }
 }
