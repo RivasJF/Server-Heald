@@ -25,7 +25,12 @@ export class DoctorService {
   }
 
   async findOne(id: string): Promise<Doctor> {
-    const doctor = await this.prisma.doctor.findUnique({ where: { id } });
+    const doctor = await this.prisma.doctor.findUnique({
+      where: { id },
+      include: {
+        user: true,
+      },
+    });
     if (!doctor) {
       throw new NotFoundException(`Doctor con id ${id} no encontrado`);
     }
