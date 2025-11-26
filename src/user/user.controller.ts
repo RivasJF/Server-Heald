@@ -16,7 +16,7 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  @ApiOperation({ summary: 'Create all users' })
+  @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({
     status: 200,
     description: 'List of users',
