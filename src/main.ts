@@ -7,7 +7,10 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,//delete or ignore not varibles DTO
+    forbidNonWhitelisted: true// trhow 400 bad request
+  }));
 
   const httpAdapter = app.getHttpAdapter();
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
