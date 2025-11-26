@@ -9,6 +9,14 @@ export class DoctorService {
   constructor(private readonly prisma: PrismaService){}
 
   async create(createDoctorDto: CreateDoctorDto): Promise<Doctor>  {
+    const { userId } = createDoctorDto;
+    const existing = await this.prisma.user.findUnique({ 
+      where:  {
+        id: userId  
+      }});
+    if (!existing) {
+      throw new NotFoundException(`User con id ${userId} no encontrado`);
+    }
     return await this.prisma.doctor.create({ data: createDoctorDto });
   }
 
