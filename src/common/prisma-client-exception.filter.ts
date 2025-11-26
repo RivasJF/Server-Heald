@@ -8,14 +8,16 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter implements 
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
 
-    if (exception.name === 'PrismaClientValidationError') {
-      const status = HttpStatus.BAD_REQUEST;
-      return response.status(status).json({
-        statusCode: status,
-        message: 'La solicitud es inválida. Por favor, verifique los datos enviados.',
-        error: 'Bad Request'
-      });
-    }
+    // Revicion Pipes of Prisma, Nt neccesary this moment
+    
+    // if (exception.name === 'PrismaClientValidationError') {
+    //   const status = HttpStatus.BAD_REQUEST;
+    //   return response.status(status).json({
+    //     statusCode: status,
+    //     message: 'La solicitud es inválida. Por favor, verifique los datos enviados.',
+    //     error: 'Bad Request'
+    //   });
+    // }
 
     if (exception?.code === 'P2002') {
       const target = (exception.meta?.target as string[])?.join(', ') ?? 'campo(s) único(s)';
