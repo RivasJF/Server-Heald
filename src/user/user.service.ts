@@ -39,4 +39,12 @@ export class UserService {
     }
     return this.prisma.user.delete({ where: { id } });
   }
+
+  async findByEmail(email: string): Promise<User> {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      throw new NotFoundException(`Usuario con email ${email} no encontrado`);
+    }
+    return user;
+  }
 }
