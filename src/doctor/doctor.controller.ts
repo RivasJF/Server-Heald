@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { DoctorService } from './doctor.service';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
 import { Doctor } from 'generated/prisma';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @ApiTags('Doctors')
 @Controller('doctor')
@@ -28,33 +29,39 @@ export class DoctorController {
   }
 
   @ApiOperation({ summary: 'Get a doctor' })
+  @ApiBearerAuth('defaultBearerAuth')
   @ApiResponse({
       status: 200,
       description: 'Get doctor',
       type: CreateDoctorDto,
     })
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Doctor> {
     return this.doctorService.findOne(id);
   }
 
   @ApiOperation({ summary: 'Update a doctor' })
+  @ApiBearerAuth('defaultBearerAuth')
   @ApiResponse({
       status: 200,
       description: 'Update doctor',
       type: CreateDoctorDto,
     })
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateDoctorDto: UpdateDoctorDto): Promise<Doctor> {
     return this.doctorService.update(id, updateDoctorDto);
   }
 
   @ApiOperation({ summary: 'Delete a doctor' })
+  @ApiBearerAuth('defaultBearerAuth')
   @ApiResponse({
       status: 200,
       description: 'Delete doctor',
       type: CreateDoctorDto,
     })
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string): Promise<Doctor> {
     return this.doctorService.remove(id);
