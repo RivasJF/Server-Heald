@@ -20,6 +20,17 @@ async function bootstrap() {
     .setDescription('The Heald Project API, developed with NestJS and Prisma')
     .setVersion('1.0')
     .addTag('Users')
+    .addBearerAuth(
+    {
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      name: 'JWT',
+      description: 'Enter JWT token',
+      in: 'header',
+    },
+    'defaultBearerAuth'
+  )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

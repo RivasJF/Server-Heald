@@ -3,7 +3,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from 'generated/prisma';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 
 @ApiTags('Users')
@@ -29,6 +29,7 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Get a user' })
+  @ApiBearerAuth('defaultBearerAuth')
   @ApiResponse({
     status: 200,
     description: 'User found',
@@ -40,23 +41,40 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
+  @ApiOperation({ summary: 'Get a user by email' })
+  @ApiBearerAuth('defaultBearerAuth')
+  @ApiResponse({
+    status: 200,
+    description: 'User found',
+    type: CreateUserDto,
+  })
+  @UseGuards(JwtAuthGuard)
+  @Get(':email')
+  findByEmail(@Param('email') email: string): Promise<User> {
+    return this.userService.findByEmail(email);
+  }
+
   @ApiOperation({ summary: 'Update a user' })
+  @ApiBearerAuth('defaultBearerAuth')
   @ApiResponse({
     status: 200,
     description: 'User updated',
     type: CreateUserDto,
   })
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<User> {
     return this.userService.update(id, updateUserDto);
   }
 
   @ApiOperation({ summary: 'Delete a user' })
+  @ApiBearerAuth('defaultBearerAuth')
   @ApiResponse({
     status: 200,
     description: 'User deleted',
     type: CreateUserDto,
   })
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string): Promise<User> {
     return this.userService.remove(id);
