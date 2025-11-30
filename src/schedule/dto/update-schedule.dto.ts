@@ -1,4 +1,3 @@
-// src/doctor-schedule/dto/update-doctor-schedule.dto.ts (Revisión)
 import {
   IsInt,
   IsArray,
@@ -9,22 +8,29 @@ import {
 import { Type } from 'class-transformer';
 import { DayDto } from './day.dto';
 import { BreakDto } from './break.dto';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateDoctorScheduleDto {
-  @IsOptional()
-  @IsInt()
-  @Min(5)
-  consultationTime?: number;
+    @ApiPropertyOptional({
+        description: 'Duration of each consultation in minutes',
+        example: 20,
+    })
+    @IsOptional()
+    @IsInt()
+    @Min(5)
+    consultationTime?: number;
 
-  @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => DayDto)
-  days?: DayDto[];
+    @ApiPropertyOptional({ type: [DayDto] })
+    @IsOptional()
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => DayDto)
+    days?: DayDto[];
 
-  @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => BreakDto)
-  breaks?: BreakDto[];
+    @ApiPropertyOptional({ type: [BreakDto] })
+    @IsOptional()
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => BreakDto)
+    breaks?: BreakDto[];
 }
