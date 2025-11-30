@@ -31,12 +31,51 @@ model User {
 }
 
 model Doctor {
-  id            String     @id @default(uuid())
+  id            String     @id @default(cuid())
   userId        String     @unique
   user          User       @relation(fields: [userId], references: [id])
   speciality    String?
-  biography           String?
-  consultationTime Int      @default(20)
+  biography     String?
+  schedule      DoctorSchedule?
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
+}
+
+enum Day{
+ MON
+ TUE
+ WED
+ THU
+ FRI
+ SAT
+ SUN
+}
+
+model DoctorSchedule {
+  id             String   @id @default(cuid())
+  doctorId       String   @unique
+  doctor         Doctor   @relation(fields: [doctorId], references: [id])
+  consultationTime Int      @default(20)
+  days           DoctorScheduleDay[]
+  breaks         DoctorBreak[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model DoctorBreak {
+  id          String          @id @default(cuid())
+  scheduleId  String
+  schedule    DoctorSchedule  @relation(fields: [scheduleId], references: [id])
+  day         Day     // "MON", "TUE"...
+  startTime   String   // "13:00"
+  endTime     String   // "14:00"
+}
+
+model DoctorScheduleDay {
+  id          String          @id @default(cuid())
+  scheduleId  String
+  schedule    DoctorSchedule  @relation(fields: [scheduleId], references: [id])
+  day         Day          // "MON", "TUE"...
+  startTime   String          // "09:00"
+  endTime     String          // "17:00"
 }
