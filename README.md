@@ -56,6 +56,12 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+## Run tests
+
+```bash
+# migrate model database
+$ npx prisma migrate dev --name <migration_name>
+```
 
 ## Deployment
 

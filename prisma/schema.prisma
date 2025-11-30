@@ -37,6 +37,7 @@ model Doctor {
   speciality    String?
   biography     String?
   schedule      DoctorSchedule?
+  clinicLocation ClinicLocation?
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 }
@@ -78,4 +79,15 @@ model DoctorScheduleDay {
   day         Day          // "MON", "TUE"...
   startTime   String          // "09:00"
   endTime     String          // "17:00"
+}
+
+model ClinicLocation {
+  id        String      @id @default(cuid())
+  latitude  Float
+  longitude Float
+  address   String
+  doctorId  String   @unique
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
