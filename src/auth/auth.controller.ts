@@ -1,14 +1,20 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Get, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginResponse } from './interfaces/jwt-payload.interface';
 import { LoginResponseDto } from './dto/login-response.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard } from './guards/jwt.guard';
+import { UserService } from 'src/user/user.service';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+  ) {}
 
   @ApiOperation({ summary: 'Login' })
   @ApiResponse({
@@ -19,5 +25,14 @@ export class AuthController {
   @Post('login')
   login(@Body() loginDto: LoginDto):Promise<LoginResponse> {
     return this.authService.login(loginDto);
+  }
+
+  @ApiOperation({ summary: 'Get current user profile' })
+  @ApiBearerAuth('defaultBearerAuth')
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  async getProfile(@Req() req: any) {
+    const userId = req.user?.id;
+    return this.userService.findOne(userId);
   }
 }
