@@ -1,4 +1,190 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateAppointmentDto } from './dto/create-appointment.dto';
+import { addMinutes, isWithinInterval } from 'date-fns';
 
 @Injectable()
-export class AppointmentService {}
+export class AppointmentService {
+    constructor(private prisma: PrismaService) {}
+
+  async create(dto: CreateAppointmentDto) {
+    const start = new Date(dto.startTime);
+    const end = new Date(dto.endTime);
+
+    if (end <= start) {
+      throw new BadRequestException('endTime debe ser mayor que startTime');
+    }
+
+    // Validar superposición
+    const overlapping = await this.prisma.appointment.findFirst({
+      where: {
+        doctorId: dto.doctorId,
+        clinicLocationId: dto.clinicLocationId,
+        OR: [
+          {
+            startTime: { lt: end },
+            endTime: { gt: start },
+          }
+        ]
+      }
+    });
+
+    if (overlapping) {
+      throw new BadRequestException('El horario ya está ocupado.');
+    }
+
+    return this.prisma.appointment.create({
+      data: {
+        doctorId: dto.doctorId,
+        patientId: dto.patientId,
+        clinicLocationId: dto.clinicLocationId,
+        startTime: start,
+        endTime: end,
+      },
+    });
+  }
+
+  // ---------------------------
+  // Disponibilidad
+  // ---------------------------
+  async getAvailabilityForDay(doctorId: string, date: string) {
+    // Inserta aquí tu función completa de cálculo de disponibilidad
+    return await this.generateAvailability(doctorId, date);
+  }
+
+  // ---------------------------
+  // Citas por paciente
+  // ---------------------------
+  async findByPatient(patientId: string) {
+    return this.prisma.appointment.findMany({
+      where: { patientId },
+      include: { doctor: true, clinicLocation: true },
+      orderBy: { startTime: 'asc' },
+    });
+  }
+
+  // ---------------------------
+  // Citas por doctor
+  // ---------------------------
+  async findByDoctor(doctorId: string) {
+    return this.prisma.appointment.findMany({
+      where: { doctorId },
+      include: { patient: true, clinicLocation: true },
+      orderBy: { startTime: 'asc' },
+    });
+  }
+
+  async generateAvailability(doctorId: string, date: string) {
+  // 1. Parsear fecha seleccionada
+  const selectedDate = new Date(date);
+  if (isNaN(selectedDate.getTime())) {
+    throw new BadRequestException('Fecha inválida');
+  }
+
+  const weekday = selectedDate
+    .toLocaleDateString('en-US', { weekday: 'short' })
+    .toUpperCase(); // MON, TUE...
+
+  const WEEK_MAP = {
+    MON: 'MON',
+    TUE: 'TUE',
+    WED: 'WED',
+    THU: 'THU',
+    FRI: 'FRI',
+    SAT: 'SAT',
+    SUN: 'SUN',
+  };
+
+  // 2. Cargar horario del doctor
+  const schedule = await this.prisma.doctorSchedule.findUnique({
+    where: { doctorId },
+    include: {
+      days: true,
+      breaks: true,
+    },
+  });
+
+  if (!schedule) {
+    throw new NotFoundException(`No existe horario para doctor ${doctorId}`);
+  }
+
+  const dayConfig = schedule.days.find((d) => d.day === WEEK_MAP[weekday]);
+
+  if (!dayConfig) {
+    return {
+      date,
+      available: [],
+      message: 'El doctor no trabaja este día',
+    };
+  }
+
+  // 3. Crear intervalos de trabajo del día
+  const dayStart = new Date(`${date}T${dayConfig.startTime}:00`);
+  const dayEnd = new Date(`${date}T${dayConfig.endTime}:00`);
+
+  // 4. Generar slots basados en consultationTime
+  const slots: { start: Date; end: Date }[] = [];
+
+  let current = dayStart;
+  while (current < dayEnd) {
+    const slotEnd = addMinutes(current, schedule.consultationTime);
+
+    if (slotEnd <= dayEnd) {
+      slots.push({
+        start: new Date(current),
+        end: new Date(slotEnd),
+      });
+    }
+
+    current = slotEnd;
+  }
+
+  // 5. Eliminar slots que coinciden con breaks
+  const todaysBreaks = schedule.breaks.filter((b) => b.day === WEEK_MAP[weekday]);
+
+  const slotsAfterBreak = slots.filter((slot) => {
+    return !todaysBreaks.some((b) => {
+      const breakStart = new Date(`${date}T${b.startTime}:00`);
+      const breakEnd = new Date(`${date}T${b.endTime}:00`);
+
+      return isWithinInterval(slot.start, { start: breakStart, end: breakEnd });
+    });
+  });
+
+  // 6. Obtener citas del día
+  const appointments = await this.prisma.appointment.findMany({
+    where: {
+      doctorId,
+      startTime: {
+        gte: new Date(`${date}T00:00:00`),
+        lt: new Date(`${date}T23:59:59`),
+      },
+    },
+  });
+
+  const slotsAfterAppointments = slotsAfterBreak.filter((slot) => {
+    return !appointments.some((app) => {
+      const appStart = new Date(app.startTime).getTime();
+      return slot.start.getTime() === appStart;
+    });
+  });
+
+  // 7. Eliminar slots en el pasado (solo si es el día actual)
+  const now = new Date();
+  const filteredByTime = slotsAfterAppointments.filter((slot) => {
+    if (selectedDate.toDateString() !== now.toDateString()) return true;
+    return slot.start > now;
+  });
+
+  // 8. Retornar respuesta final
+  return {
+    date,
+    totalSlots: slots.length,
+    availableSlots: filteredByTime.length,
+    available: filteredByTime.map((s) => ({
+      start: s.start.toISOString(),
+      end: s.end.toISOString(),
+    })),
+  };
+}
+}
