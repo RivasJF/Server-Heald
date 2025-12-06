@@ -76,7 +76,7 @@ export class AppointmentService {
 
   async generateAvailability(doctorId: string, date: string) {
   // 1. Parsear fecha seleccionada
-  const selectedDate = new Date(date);
+  const selectedDate = new Date(`${date}T00:00:00`);
   if (isNaN(selectedDate.getTime())) {
     throw new BadRequestException('Fecha inválida');
   }
@@ -176,15 +176,22 @@ export class AppointmentService {
     return slot.start > now;
   });
 
-  // 8. Retornar respuesta final
-  return {
-    date,
-    totalSlots: slots.length,
-    availableSlots: filteredByTime.length,
-    available: filteredByTime.map((s) => ({
-      start: s.start.toISOString(),
-      end: s.end.toISOString(),
-    })),
-  };
-}
+      const formattedAvailable = filteredByTime.map((s) => {
+        const format = (date: Date) => {
+          const pad = (num) => num.toString().padStart(2, '0');
+          return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}.000Z`;
+        };
+        return {
+          start: format(s.start),
+          end: format(s.end),
+        };
+      });
+  
+      // 8. Retornar respuesta final
+      return {
+        date,
+        totalSlots: slots.length,
+        availableSlots: formattedAvailable.length,
+        available: formattedAvailable,
+      };}
 }
