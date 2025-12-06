@@ -147,7 +147,9 @@ export class AppointmentService {
       const breakStart = new Date(`${date}T${b.startTime}:00`);
       const breakEnd = new Date(`${date}T${b.endTime}:00`);
 
-      return isWithinInterval(slot.start, { start: breakStart, end: breakEnd });
+      // A slot is unavailable if it starts during the break.
+      // [breakStart, breakEnd)
+      return slot.start.getTime() >= breakStart.getTime() && slot.start.getTime() < breakEnd.getTime();
     });
   });
 
