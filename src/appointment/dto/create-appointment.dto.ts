@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsISO8601, IsString } from 'class-validator';
+import { IsDateString, IsISO8601, IsString } from 'class-validator';
 
 export class CreateAppointmentDto {
   @ApiProperty({ example: 'clxmilx2h000078ylk03oya0g' })
@@ -14,11 +14,11 @@ export class CreateAppointmentDto {
   @IsString()
   clinicLocationId: string;
 
-  @ApiProperty({ example: '2025-12-12T10:00:00.000Z' })
-  @IsISO8601()
+  @ApiProperty({ example: '2025-12-12T10:00:00' })
+  @IsDateString()
   startTime: string;
 
-  @ApiProperty({ example: '2025-12-12T10:30:00.000Z' })
-  @IsISO8601()
+  @ApiProperty({ example: '2025-12-12T10:30:00' })
+  @IsDateString()
   endTime: string;
 }
