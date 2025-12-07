@@ -156,9 +156,30 @@ if (dayOff) {
     };
   }
 
+    // --- Inicio de la nueva lógica de integración ---
+
+    // Buscar si hay un cierre anticipado para este día
+    const dailyClosure = await this.prisma.doctorDayClose.findFirst({
+      where: {
+        doctorId,
+        date: selectedDate, // Usar la fecha local de medianoche ya parseada
+      },
+    });
+
   // 3. Crear intervalos de trabajo del día
   const dayStart = new Date(`${date}T${dayConfig.startTime}:00`);
-  const dayEnd = new Date(`${date}T${dayConfig.endTime}:00`);
+  let dayEnd = new Date(`${date}T${dayConfig.endTime}:00`);
+
+
+  // Si hay un cierre, ajustar la hora de fin del día si es más temprano
+  if (dailyClosure) {
+    const closureTime =  new Date(`${date}T${dailyClosure.closedAt}:00`);
+    if (closureTime < dayEnd) {
+      dayEnd = closureTime;
+    }
+  }
+    // --- Fin de la nueva lógica de integración ---
+
 
   // 4. Generar slots basados en consultationTime
   const slots: { start: Date; end: Date }[] = [];
