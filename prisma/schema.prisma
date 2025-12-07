@@ -125,7 +125,7 @@ enum AppointmentStatus {
 model DoctorDayOff {
   id        String   @id @default(cuid())
   doctorId  String
-  date      DateTime
+  date      DateTime @unique
   doctor    Doctor   @relation(fields: [doctorId], references: [id])
   createdAt DateTime @default(now())
 }
@@ -133,7 +133,7 @@ model DoctorDayOff {
 model DoctorDayClose {
   id        String   @id @default(cuid())
   doctorId  String
-  date      DateTime // día que cerró antes
+  date      DateTime @unique
   closedAt  String // hora en que dejó de trabajar
   doctor    Doctor   @relation(fields: [doctorId], references: [id])
   createdAt DateTime @default(now())
