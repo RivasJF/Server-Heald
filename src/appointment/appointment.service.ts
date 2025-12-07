@@ -94,6 +94,14 @@ if (!doctor.active) {
   };
 }
 
+const clinicLocation = await this.prisma.clinicLocation.findUnique({
+        where: { doctorId: doctorId },
+        select: { id: true }
+      })
+      if (!clinicLocation) {
+        throw new NotFoundException(`No existe ubicación para el doctor ${doctorId}`);
+      }
+
   // 1. Parsear fecha seleccionada
   const selectedDate = new Date(`${date}T00:00:00`);
   if (isNaN(selectedDate.getTime())) {
@@ -247,12 +255,12 @@ if (dayOff) {
           end: format(s.end),
         };
       });
-  
       // 8. Retornar respuesta final
       return {
         date,
         totalSlots: slots.length,
         availableSlots: formattedAvailable.length,
+        clinicLocationId: clinicLocation.id,
         available: formattedAvailable,
       };}
 }

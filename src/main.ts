@@ -24,6 +24,8 @@ async function bootstrap() {
     .addTag('Doctors')
     .addTag('Schedules')
     .addTag('Clinic')
+    .addTag('Doctor-Status')
+    .addTag('Appointment')
     .addBearerAuth(
     {
       type: 'http',

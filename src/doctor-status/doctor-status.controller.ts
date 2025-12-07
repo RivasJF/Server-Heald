@@ -1,15 +1,27 @@
-import { Controller, Post, Body, Param, Patch } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Param,
+  Patch,
+  UseGuards,
+} from '@nestjs/common';
 import { DoctorStatusService } from './doctor-status.service';
 import { CreateDayOffDto } from './dto/create-day-off.dto';
 import { UpdateServiceStatusDto } from './dto/update-service-status.dto';
 import { CreateDayCloseDto } from './dto/create-day-close';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
+@ApiTags('Doctor-Status')
+@ApiBearerAuth('defaultBearerAuth')
+@UseGuards(AuthGuard('jwt'))
 @Controller('doctor-status')
 export class DoctorStatusController {
   constructor(private readonly doctorStatusService: DoctorStatusService) {}
 
-  // 1. Desactivar un día completo
   @Post(':doctorId/day-off')
+  @ApiOperation({ summary: 'Set a day off for a doctor' })
   async setDayOff(
     @Param('doctorId') doctorId: string,
     @Body() dto: CreateDayOffDto,
@@ -17,8 +29,8 @@ export class DoctorStatusController {
     return this.doctorStatusService.setDayOff(doctorId, dto);
   }
 
-  // 2. Cierre anticipado de ese día
   @Post(':doctorId/daily-closure')
+  @ApiOperation({ summary: 'Set a daily closure for a doctor' })
   async setDailyClosure(
     @Param('doctorId') doctorId: string,
     @Body() dto: CreateDayCloseDto,
@@ -26,8 +38,8 @@ export class DoctorStatusController {
     return this.doctorStatusService.setDailyClosure(doctorId, dto);
   }
 
-  // 3. Activar/desactivar servicio global
   @Patch(':doctorId/service-status')
+  @ApiOperation({ summary: 'Set the service status for a doctor' })
   async setServiceStatus(
     @Param('doctorId') doctorId: string,
     @Body() dto: UpdateServiceStatusDto,
