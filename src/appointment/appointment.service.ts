@@ -75,6 +75,25 @@ export class AppointmentService {
   }
 
   async generateAvailability(doctorId: string, date: string) {
+
+  const doctor = await this.prisma.doctorServiceStatus.findUnique({
+  where: { doctorId: doctorId },
+});
+
+if (!doctor) {
+  throw new NotFoundException("Doctor no encontrado");
+}
+
+if (!doctor.active) {
+  return {
+    date,
+    totalSlots: 0,
+    availableSlots: 0,
+    available: [],
+    message: "El doctor tiene su servicio desactivado",
+  };
+}
+
   // 1. Parsear fecha seleccionada
   const selectedDate = new Date(`${date}T00:00:00`);
   if (isNaN(selectedDate.getTime())) {
@@ -107,6 +126,25 @@ export class AppointmentService {
   if (!schedule) {
     throw new NotFoundException(`No existe horario para doctor ${doctorId}`);
   }
+
+  const isDayOff = (`${date}T00:00:00.000Z`)
+
+  const dayOff = await this.prisma.doctorDayOff.findFirst({
+  where: {
+    doctorId,
+    date: isDayOff,
+  },
+});
+
+if (dayOff) {
+  return {
+    date,
+    totalSlots: 0,
+    availableSlots: 0,
+    available: [],
+    message: "El doctor no atenderá este día",
+  };
+}
 
   const dayConfig = schedule.days.find((d) => d.day === WEEK_MAP[weekday]);
 

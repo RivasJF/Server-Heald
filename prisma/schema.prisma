@@ -134,7 +134,7 @@ model DoctorDayClose {
   id        String   @id @default(cuid())
   doctorId  String
   date      DateTime // día que cerró antes
-  closedAt  DateTime // hora en que dejó de trabajar
+  closedAt  String // hora en que dejó de trabajar
   doctor    Doctor   @relation(fields: [doctorId], references: [id])
   createdAt DateTime @default(now())
 }
