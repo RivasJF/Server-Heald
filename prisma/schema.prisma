@@ -35,16 +35,19 @@ model User {
 }
 
 model Doctor {
-  id             String          @id @default(cuid())
-  userId         String          @unique
-  user           User            @relation(fields: [userId], references: [id])
-  speciality     String?
-  biography      String?
-  schedule       DoctorSchedule?
-  clinicLocation ClinicLocation?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  appointments   Appointment[]
+  id                  String               @id @default(cuid())
+  userId              String               @unique
+  user                User                 @relation(fields: [userId], references: [id])
+  speciality          String?
+  biography           String?
+  schedule            DoctorSchedule?
+  clinicLocation      ClinicLocation?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  appointments        Appointment[]
+  dayOffs             DoctorDayOff[]
+  dayCloses           DoctorDayClose[]
+  serviceStatus       DoctorServiceStatus?
 }
 
 enum Day {
@@ -117,4 +120,29 @@ enum AppointmentStatus {
   SCHEDULED
   CANCELLED
   COMPLETED
+}
+
+model DoctorDayOff {
+  id        String   @id @default(cuid())
+  doctorId  String
+  date      DateTime
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model DoctorDayClose {
+  id        String   @id @default(cuid())
+  doctorId  String
+  date      DateTime // día que cerró antes
+  closedAt  DateTime // hora en que dejó de trabajar
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model DoctorServiceStatus {
+  id        String   @id @default(cuid())
+  doctorId  String   @unique
+  active    Boolean  @default(true) // true = recibe citas, false = cerrado indefinidamente
+  updatedAt DateTime @updatedAt
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
 }
