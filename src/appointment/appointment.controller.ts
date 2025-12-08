@@ -7,6 +7,7 @@ import {
   Query,
   UseGuards,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import { AppointmentService } from './appointment.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
@@ -45,5 +46,11 @@ export class AppointmentController {
   @ApiOperation({ summary: 'Find appointments by patient' })
   findByPatient(@Param('patientId') patientId: string) {
     return this.appointmentService.findByPatient(patientId);
+  }
+
+  @Delete(':appointmentId')
+  @ApiOperation({ summary: 'Cancel an appointment' })
+  cancelAppointment(@Param('appointmentId') appointmentId: string) {
+    return this.appointmentService.cancelAppointment(appointmentId);
   }
 }

@@ -17,7 +17,18 @@ export class DoctorService {
     if (!existing) {
       throw new NotFoundException(`User con id ${userId} no encontrado`);
     }
-    return await this.prisma.doctor.create({ data: createDoctorDto });
+    
+    const doctor = await this.prisma.doctor.create({ data: createDoctorDto });
+
+    // Crear doctorServiceStatus con active: false
+    await this.prisma.doctorServiceStatus.create({
+      data: {
+        doctorId: doctor.id,
+        active: false,
+      },
+    });
+
+    return doctor;
   }
 
   async findAll(): Promise<Doctor[]> {
@@ -34,6 +45,18 @@ export class DoctorService {
     if (!doctor) {
       throw new NotFoundException(`Doctor con id ${id} no encontrado`);
     }
+    return doctor;
+  }
+
+  async findByUserId(userId: string): Promise<Doctor> {
+    const doctor = await this.prisma.doctor.findUnique({
+      where: { userId }
+    });
+
+    if (!doctor) {
+      throw new NotFoundException(`El usuario con id ${userId} necesita crear un perfil de doctor.`);
+    }
+
     return doctor;
   }
 

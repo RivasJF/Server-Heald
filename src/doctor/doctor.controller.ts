@@ -41,6 +41,19 @@ export class DoctorController {
     return this.doctorService.findOne(id);
   }
 
+  @ApiOperation({ summary: 'Get a doctor by user ID' })
+  @ApiBearerAuth('defaultBearerAuth')
+  @ApiResponse({
+    status: 200,
+    description:
+      'Get doctor profile by user ID. Returns a message if profile does not exist.',
+  })
+  @UseGuards(JwtAuthGuard)
+  @Get('user/:userId')
+  findByUserId(@Param('userId') userId: string): Promise<Doctor> {
+    return this.doctorService.findByUserId(userId);
+  }
+
   @ApiOperation({ summary: 'Update a doctor' })
   @ApiBearerAuth('defaultBearerAuth')
   @ApiResponse({

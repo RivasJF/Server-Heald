@@ -7,6 +7,18 @@ import { addMinutes, isWithinInterval } from 'date-fns';
 export class AppointmentService {
     constructor(private prisma: PrismaService) {}
 
+  async cancelAppointment(appointmentId: string) {
+    const appointment = await this.prisma.appointment.findUnique({
+      where: { id: appointmentId },
+    });
+    if (!appointment) {
+      throw new NotFoundException(`Cita con id ${appointmentId} no encontrada`);
+    }
+    return this.prisma.appointment.delete({
+      where: { id: appointmentId },
+    });
+  }
+  
   async create(dto: CreateAppointmentDto) {
     const start = new Date(dto.startTime);
     const end = new Date(dto.endTime);

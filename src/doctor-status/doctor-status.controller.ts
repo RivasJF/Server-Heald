@@ -5,6 +5,7 @@ import {
   Param,
   Patch,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { DoctorStatusService } from './doctor-status.service';
 import { CreateDayOffDto } from './dto/create-day-off.dto';
@@ -29,6 +30,15 @@ export class DoctorStatusController {
     return this.doctorStatusService.setDayOff(doctorId, dto);
   }
 
+  @Delete(':doctorId/day-off')
+  @ApiOperation({ summary: 'Delete a day off for a doctor' })
+  async deleteDayOff(
+    @Param('doctorId') doctorId: string,
+    @Body() dto: CreateDayOffDto,
+  ) {
+    return this.doctorStatusService.deleteDayOff(doctorId, dto);
+  }
+
   @Post(':doctorId/daily-closure')
   @ApiOperation({ summary: 'Set a daily closure for a doctor' })
   async setDailyClosure(
@@ -36,6 +46,15 @@ export class DoctorStatusController {
     @Body() dto: CreateDayCloseDto,
   ) {
     return this.doctorStatusService.setDailyClosure(doctorId, dto);
+  }
+
+  @Delete(':doctorId/daily-closure')
+  @ApiOperation({ summary: 'Delete a daily closure for a doctor' })
+  async deleteDailyClosure(
+    @Param('doctorId') doctorId: string,
+    @Body() dto: CreateDayOffDto,
+  ) {
+    return this.doctorStatusService.deleteDailyClosure(doctorId, dto);
   }
 
   @Patch(':doctorId/service-status')
