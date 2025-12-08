@@ -15,10 +15,4 @@ export class CreateDoctorDto {
   @IsOptional()
   @IsString()
   biography?: string;
-
-  @ApiProperty({ description: 'Consultation time of the doctor', example: 30 })
-  @IsOptional()
-  @IsInt()
-  @Min(5)
-  consultationTime?: number;
 }
