@@ -83,11 +83,8 @@ export class ScheduleService {
 
         const scheduleId = doctorSchedule.id;
 
-        // Estructura base para actualizar el campo simple (consultationTime)
+        // Estructura base para actualizar
         const updateData: Prisma.DoctorScheduleUpdateInput = {};
-        if (data.consultationTime !== undefined) {
-            updateData.consultationTime = data.consultationTime;
-        }
 
         // --- Manejo de la actualización de Días de Trabajo (Reemplazo) ---
         if (data.days !== undefined) {

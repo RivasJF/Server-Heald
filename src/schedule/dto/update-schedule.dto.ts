@@ -11,15 +11,6 @@ import { BreakDto } from './break.dto';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateDoctorScheduleDto {
-    @ApiPropertyOptional({
-        description: 'Duration of each consultation in minutes',
-        example: 20,
-    })
-    @IsOptional()
-    @IsInt()
-    @Min(5)
-    consultationTime?: number;
-
     @ApiPropertyOptional({ type: [DayDto] })
     @IsOptional()
     @IsArray()
