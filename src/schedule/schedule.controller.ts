@@ -2,11 +2,12 @@ import { Controller, Post, Param, Body, Get, Patch, UseGuards } from '@nestjs/co
 import { ScheduleService } from './schedule.service';
 import { CreateDoctorScheduleDto } from './dto/create-schedule.dto';
 import { UpdateDoctorScheduleDto } from './dto/update-schedule.dto';
-import { ApiTags, ApiOperation, ApiParam, ApiBody, ApiResponse } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
+import { ApiTags, ApiOperation, ApiParam, ApiBody, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @ApiTags('Schedules')
-@UseGuards(AuthGuard('jwt'))
+@ApiBearerAuth('defaultBearerAuth')
+@UseGuards(JwtAuthGuard)
 @Controller('schedule')
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}

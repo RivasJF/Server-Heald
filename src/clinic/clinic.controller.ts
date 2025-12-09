@@ -1,12 +1,14 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ClinicService } from './clinic.service';
 import { CreateClinicDto } from './dto/create-clinic.dto';
 import { UpdateClinicDto } from './dto/update-clinic.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @ApiTags('Clinic')
-@UseGuards(AuthGuard('jwt'))
+@ApiBearerAuth('defaultBearerAuth')
+@UseGuards(JwtAuthGuard)
 @Controller('clinic')
 export class ClinicController {
   constructor(private readonly clinicService: ClinicService) {}
