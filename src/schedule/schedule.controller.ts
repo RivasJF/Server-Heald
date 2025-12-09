@@ -40,7 +40,7 @@ export class ScheduleController {
   @ApiBody({ type: UpdateDoctorScheduleDto })
   @ApiResponse({ status: 200, description: 'The schedule has been successfully updated.' })
   @ApiResponse({ status: 404, description: 'Schedule not found.' })
-  async update( @Param('id') id: string, @Body() updateScheduleDto: UpdateDoctorScheduleDto,) {
-    return this.scheduleService.updateSchedule(id, updateScheduleDto);
+  async update( @Param('id') doctorId: string, @Body() updateScheduleDto: UpdateDoctorScheduleDto,) {
+    return this.scheduleService.updateSchedule(doctorId, updateScheduleDto);
   }
 }

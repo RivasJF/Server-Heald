@@ -70,15 +70,15 @@ export class ScheduleService {
     return schedule;
   }
 
-  async updateSchedule(id: string, data: UpdateDoctorScheduleDto) {
+  async updateSchedule(doctorId: string, data: UpdateDoctorScheduleDto) {
         // 1. Encontrar el DoctorSchedule (y el doctorId para la búsqueda)
         const doctorSchedule = await this.prisma.doctorSchedule.findUnique({
-            where: { doctorId: id },
+            where: { doctorId },
             select: { id: true, doctorId: true }
         });
 
         if (!doctorSchedule) {
-            throw new NotFoundException(`Horario para Doctor con userId ${id} no encontrado.`);
+            throw new NotFoundException(`Horario para Doctor con userId ${doctorId} no encontrado.`);
         }
 
         const scheduleId = doctorSchedule.id;
