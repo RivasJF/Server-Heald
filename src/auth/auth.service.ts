@@ -30,7 +30,7 @@ export class AuthService {
 
         return {
             access_token: token,
-            user
+            user:this.userService.excludePassword(user)
         }
     }
 }

@@ -2,7 +2,6 @@ import { Body, Controller, Post, Get, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { LoginResponse } from './interfaces/jwt-payload.interface';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from './guards/jwt.guard';
@@ -23,7 +22,7 @@ export class AuthController {
     type: LoginResponseDto,
   })
   @Post('login')
-  login(@Body() loginDto: LoginDto):Promise<LoginResponse> {
+  login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
   }
 

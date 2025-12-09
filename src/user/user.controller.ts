@@ -24,7 +24,7 @@ export class UserController {
     type: [CreateUserDto],
   })
   @Get()
-  findAll(): Promise<User[]> {
+  findAll() {
     return this.userService.findAll();
   }
 
@@ -37,22 +37,10 @@ export class UserController {
   })
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<User> {
+  findOne(@Param('id') id: string) {
     return this.userService.findOne(id);
   }
 
-  @ApiOperation({ summary: 'Get a user by email' })
-  @ApiBearerAuth('defaultBearerAuth')
-  @ApiResponse({
-    status: 200,
-    description: 'User found',
-    type: CreateUserDto,
-  })
-  @UseGuards(JwtAuthGuard)
-  @Get(':email')
-  findByEmail(@Param('email') email: string): Promise<User> {
-    return this.userService.findByEmail(email);
-  }
 
   @ApiOperation({ summary: 'Update a user' })
   @ApiBearerAuth('defaultBearerAuth')
@@ -63,7 +51,7 @@ export class UserController {
   })
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<User> {
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
 
@@ -76,7 +64,7 @@ export class UserController {
   })
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<User> {
+  remove(@Param('id') id: string) {
     return this.userService.remove(id);
   }
 }
