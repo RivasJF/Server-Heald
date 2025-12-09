@@ -50,13 +50,24 @@ export class DoctorService {
 
   async findByUserId(userId: string): Promise<Doctor> {
     const doctor = await this.prisma.doctor.findUnique({
-      where: { userId }
+      where: { userId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phoneNumber: true,
+            birthDate: true,
+            role: true,
+          },
+        },
+        serviceStatus: true,
+      },
     });
-
     if (!doctor) {
-      throw new NotFoundException(`El usuario con id ${userId} necesita crear un perfil de doctor.`);
+      throw new NotFoundException(`Doctor con userId ${userId} no encontrado`);
     }
-
     return doctor;
   }
 
