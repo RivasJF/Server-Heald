@@ -64,7 +64,25 @@ export class ClinicService {
   async findNearby(lat: number, lng: number, radius: number) {
     // Nota: Esta implementación es para SQLite y calcula la distancia manualmente.
     // Para un mejor rendimiento con grandes volúmenes de datos, se recomienda migrar a PostgreSQL con PostGIS.
-    const allClinics = await this.prisma.clinicLocation.findMany();
+    const allClinics = await this.prisma.clinicLocation.findMany({
+      include: {
+        doctor: {
+          include: {
+            serviceStatus: true,
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                phoneNumber: true,
+                birthDate: true,
+                role: true,
+              },
+            },
+          },
+        },
+      },
+    });
 
     const clinicsWithDistance = allClinics
       .map((clinic) => {
