@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ClinicService } from './clinic.service';
 import { CreateClinicDto } from './dto/create-clinic.dto';
 import { UpdateClinicDto } from './dto/update-clinic.dto';
+import { GetNearbyClinicsDto } from './dto/get-nearby-clinics.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
@@ -26,6 +27,14 @@ export class ClinicController {
   @ApiResponse({ status: 200, description: 'Return all clinics.' })
   findAll() {
     return this.clinicService.findAll();
+  }
+
+  @Post('near') // Cambiado a POST para recibir datos en el body
+  @ApiOperation({ summary: 'Get nearby clinics' })
+  @ApiResponse({ status: 200, description: 'Return nearby clinics.' })
+  async getNearbyClinics(@Body() body: GetNearbyClinicsDto) {
+    const { lat, lng, radius = 5000 } = body; // Asignar valor por defecto si no se proporciona
+    return this.clinicService.findNearby(lat, lng, radius);
   }
 
   @Get(':id')
