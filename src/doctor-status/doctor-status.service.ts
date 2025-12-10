@@ -44,13 +44,24 @@ export class DoctorStatusService {
   async setDailyClosure(doctorId: string, dto: CreateDayCloseDto) {
   const dateOnly = new Date(`${dto.date}T00:00:00`);
 
-  return this.prisma.doctorDayClose.create({
-    data: {
-      doctorId,
-      date: dateOnly,
-      closedAt: dto.closedAt,
-    },
-  });
+    const existingClosure = await this.prisma.doctorDayClose.findFirst({
+      where: {
+        doctorId,
+        date: dateOnly,
+      },
+    });
+
+    if (existingClosure) {
+      throw new BadRequestException(`Ya existe un cierre anticipado para esta fecha.`);
+    }
+
+    return this.prisma.doctorDayClose.create({
+      data: {
+        doctorId,
+        date: dateOnly,
+        closedAt: dto.closedAt,
+      },
+    });
   }
 
   async deleteDailyClosure(doctorId: string, dto: CreateDayOffDto) {
