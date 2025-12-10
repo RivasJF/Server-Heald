@@ -10,10 +10,23 @@ export class DoctorStatusService {
 
   // 1. Día completo deshabilitado
   async setDayOff(doctorId: string, dto: CreateDayOffDto) {
+    const date = new Date(dto.date);
+
+    const existingDayOff = await this.prisma.doctorDayOff.findFirst({
+      where: {
+        doctorId,
+        date,
+      },
+    });
+
+    if (existingDayOff) {
+      throw new BadRequestException('Ya existe un día libre para esta fecha.');
+    }
+
     return this.prisma.doctorDayOff.create({
       data: {
         doctorId,
-        date: new Date(dto.date),
+        date,
       },
     });
   }

@@ -80,10 +80,36 @@ export class DoctorService {
   }
 
   async remove(id: string): Promise<Doctor> {
-    const existing = await this.prisma.doctor.findUnique({ where: { id } });
-    if (!existing) {
-      throw new NotFoundException(`Doctor con id ${id} no encontrado`);
-    }
-    return await this.prisma.doctor.delete({ where: { id } });
+    return this.prisma.$transaction(async (prisma) => {
+      const doctor = await prisma.doctor.findUnique({ where: { id } });
+      if (!doctor) {
+        throw new NotFoundException(`Doctor con id ${id} no encontrado`);
+      }
+
+      // Eliminar dependencias en cascada
+      await prisma.appointment.deleteMany({ where: { doctorId: id } });
+
+      const schedule = await prisma.doctorSchedule.findUnique({
+        where: { doctorId: id },
+      });
+
+      if (schedule) {
+        await prisma.doctorBreak.deleteMany({ where: { scheduleId: schedule.id } });
+        await prisma.doctorScheduleDay.deleteMany({ where: { scheduleId: schedule.id } });
+        await prisma.doctorSchedule.delete({ where: { doctorId: id } });
+      }
+
+      await prisma.doctorDayOff.deleteMany({ where: { doctorId: id } });
+      await prisma.doctorDayClose.deleteMany({ where: { doctorId: id } });
+      await prisma.doctorServiceStatus.deleteMany({ where: { doctorId: id } });
+      await prisma.clinicLocation.deleteMany({ where: { doctorId: id } });
+
+      // Finalmente, eliminar el doctor
+      const deletedDoctor = await prisma.doctor.delete({
+        where: { id },
+      });
+
+      return deletedDoctor;
+    });
   }
 }
