@@ -37,12 +37,12 @@ export class ClinicController {
     return this.clinicService.findNearby(lat, lng, radius);
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Get a clinic by id' })
+  @Get(':doctorId')
+  @ApiOperation({ summary: 'Get a clinic by doctorid' })
   @ApiResponse({ status: 200, description: 'Return a clinic by id.' })
   @ApiResponse({ status: 404, description: 'Clinic not found.' })
-  findOne(@Param('id') id: string) {
-    return this.clinicService.findOne(id);
+  findOne(@Param('doctorId') doctorId: string) {
+    return this.clinicService.findOne(doctorId);
   }
 
   @Patch(':id')

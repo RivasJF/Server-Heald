@@ -89,7 +89,19 @@ export class AppointmentService {
   async findByDoctor(doctorId: string) {
     return this.prisma.appointment.findMany({
       where: { doctorId },
-      include: { patient: true, clinicLocation: true },
+      include: {
+        patient: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phoneNumber: true,
+            birthDate: true,
+            role: true,
+          },
+        },
+        clinicLocation: true,
+      },
       orderBy: { startTime: 'asc' },
     });
   }

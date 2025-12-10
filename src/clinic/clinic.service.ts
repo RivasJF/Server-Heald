@@ -26,14 +26,13 @@ export class ClinicService {
     return this.prisma.clinicLocation.findMany();
   }
 
-  async findOne(id: string) {
+  async findOne(doctorId: string) {
     const clinic = await this.prisma.clinicLocation.findUnique({
-      where: { id },
-      include: { doctor: true },
+      where: { doctorId },
     });
 
     if (!clinic) {
-      throw new NotFoundException(`Clinic con id ${id} not found`);
+      throw new NotFoundException(`Clinic con id doctor ${doctorId} not found`);
     }
 
     return clinic;
