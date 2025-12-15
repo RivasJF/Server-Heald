@@ -268,12 +268,8 @@ export class AppointmentService {
       });
     });
 
-    // 7. Eliminar slots en el pasado (solo si es el día actual)
-    const now = new Date();
-    const filteredByTime = slotsAfterAppointments.filter((slot) => {
-      if (selectedDate.toDateString() !== now.toDateString()) return true;
-      return slot.start > now;
-    });
+    // 7. Se elimina el filtro de "slots pasados" para el día actual, según solicitado.
+    const filteredByTime = slotsAfterAppointments;
 
     const formattedAvailable = filteredByTime.map((s) => ({
       start: s.start.toISOString(),
