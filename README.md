@@ -38,7 +38,7 @@ $ npx prisma migrate dev --name <migration_name>
 
 ```bash
 # run build and conteiner
-$ docker-compose up --build
+$ docker-compose up -d --build
 
 # destroy conteiners and netword
 $ docker-compose down
