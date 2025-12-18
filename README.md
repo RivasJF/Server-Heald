@@ -34,6 +34,15 @@ $ npm run start:prod
 # migrate model database
 $ npx prisma migrate dev --name <migration_name>
 ```
+## Run docker
+
+```bash
+# run build and conteiner
+$ docker-compose up --build
+
+# destroy conteiners and netword
+$ docker-compose down
+```
 ## License
 
 Nest is MIT licensed.
