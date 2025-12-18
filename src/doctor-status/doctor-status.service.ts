@@ -55,7 +55,7 @@ export class DoctorStatusService {
 
   // 2. Cierre anticipado en un día específico
   async setDailyClosure(doctorId: string, dto: CreateDayCloseDto) {
-  const dateOnly = new Date(`${dto.date}T00:00:00`);
+  const dateOnly = new Date(dto.date);
 
     const existingClosure = await this.prisma.doctorDayClose.findFirst({
       where: {

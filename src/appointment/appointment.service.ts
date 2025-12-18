@@ -201,7 +201,7 @@ export class AppointmentService {
     const dailyClosure = await this.prisma.doctorDayClose.findFirst({
       where: {
         doctorId,
-        date: selectedDate,
+        date: (`${date}T00:00:00.000Z`),
       },
     });
 
