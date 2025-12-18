@@ -7,7 +7,4 @@ export class UpdateDoctorDto extends PartialType(OmitType(CreateDoctorDto, ['use
     
     @ApiPropertyOptional({ example: 'Nueva biografía' })
     biography?: string;
-
-    @ApiPropertyOptional({ example: 30 })
-    consultationTime?: number;
 }
