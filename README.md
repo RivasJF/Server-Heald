@@ -38,10 +38,13 @@ $ npx prisma migrate dev --name <migration_name>
 
 ```bash
 # run build and conteiner
-$ docker-compose up -d --build
+$ docker compose up -d --build
 
 # destroy conteiners and netword
-$ docker-compose down
+$ docker compose down
+
+# run db to dev
+$ docker compose -f docker-compose.dev.yml up -d
 ```
 ## License
 
