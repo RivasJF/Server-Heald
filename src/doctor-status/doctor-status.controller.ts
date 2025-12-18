@@ -6,6 +6,7 @@ import {
   Patch,
   UseGuards,
   Delete,
+  Get,
 } from '@nestjs/common';
 import { DoctorStatusService } from './doctor-status.service';
 import { CreateDayOffDto } from './dto/create-day-off.dto';
@@ -28,6 +29,12 @@ export class DoctorStatusController {
     @Body() dto: CreateDayOffDto,
   ) {
     return this.doctorStatusService.setDayOff(doctorId, dto);
+  }
+
+  @Get(':doctorId/day-off')
+  @ApiOperation({ summary: 'Get all day offs for a doctor' })
+  async getAllDayOffs(@Param('doctorId') doctorId: string) {
+    return this.doctorStatusService.getAllDayOffs(doctorId);
   }
 
   @Delete(':doctorId/day-off')

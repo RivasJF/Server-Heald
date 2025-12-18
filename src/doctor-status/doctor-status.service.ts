@@ -31,6 +31,14 @@ export class DoctorStatusService {
     });
   }
 
+  async getAllDayOffs(doctorId: string) {
+    const listDayOffs = await this.prisma.doctorDayOff.findMany({ where: { doctorId } });
+    if (listDayOffs.length==0) {
+      throw new NotFoundException(`No se encontraron días libres para el doctor ${doctorId}`);
+    }
+    return listDayOffs;
+  }
+
   async deleteDayOff(doctorId: string, dto: CreateDayOffDto) {
     const date = new Date(dto.date);
 
