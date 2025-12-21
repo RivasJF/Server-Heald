@@ -6,18 +6,19 @@ import { Doctor } from 'generated/prisma';
 
 @Injectable()
 export class DoctorService {
-  constructor(private readonly prisma: PrismaService){}
+  constructor(private readonly prisma: PrismaService) {}
 
-  async create(createDoctorDto: CreateDoctorDto): Promise<Doctor>  {
+  async create(createDoctorDto: CreateDoctorDto): Promise<Doctor> {
     const { userId } = createDoctorDto;
-    const existing = await this.prisma.user.findUnique({ 
-      where:  {
-        id: userId  
-      }});
+    const existing = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
     if (!existing) {
       throw new NotFoundException(`User con id ${userId} no encontrado`);
     }
-    
+
     const doctor = await this.prisma.doctor.create({ data: createDoctorDto });
 
     // Crear doctorServiceStatus con active: false
@@ -39,7 +40,18 @@ export class DoctorService {
     const doctor = await this.prisma.doctor.findUnique({
       where: { id },
       include: {
-        user: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phoneNumber: true,
+            birthDate: true,
+            role: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
       },
     });
     if (!doctor) {
@@ -72,11 +84,14 @@ export class DoctorService {
   }
 
   async update(id: string, updateDoctorDto: UpdateDoctorDto): Promise<Doctor> {
-    const existing = await this.prisma.doctor.findUnique({ where: { id } });
-    if (!existing) {
+    try{
+      return await this.prisma.doctor.update({
+      where: { id },
+      data: updateDoctorDto,
+    })
+    } catch{
       throw new NotFoundException(`Doctor con id ${id} no encontrado`);
     }
-    return await this.prisma.doctor.update({ where: { id }, data: updateDoctorDto });
   }
 
   async remove(id: string): Promise<Doctor> {
@@ -94,8 +109,12 @@ export class DoctorService {
       });
 
       if (schedule) {
-        await prisma.doctorBreak.deleteMany({ where: { scheduleId: schedule.id } });
-        await prisma.doctorScheduleDay.deleteMany({ where: { scheduleId: schedule.id } });
+        await prisma.doctorBreak.deleteMany({
+          where: { scheduleId: schedule.id },
+        });
+        await prisma.doctorScheduleDay.deleteMany({
+          where: { scheduleId: schedule.id },
+        });
         await prisma.doctorSchedule.delete({ where: { doctorId: id } });
       }
 
