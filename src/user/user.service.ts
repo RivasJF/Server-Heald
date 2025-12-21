@@ -2,7 +2,19 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { User } from 'generated/prisma'; // eslint-disable-line
+import { User } from 'generated/prisma';
+import { UserEntity } from './entities/user.entity';
+
+const userSelect = {
+  id: true,
+  name: true,
+  email: true,
+  phoneNumber: true,
+  birthDate: true,
+  role: true,
+  createdAt: true,
+  updatedAt: true,
+};
 
 @Injectable()
 export class UserService {
@@ -13,41 +25,54 @@ export class UserService {
     const { password, ...result } = user;
     return result;
   }
-
-  async create(createUserDto: CreateUserDto) {
-    const user = await this.prisma.user.create({ data: createUserDto });
-    return this.excludePassword(user);
+  
+  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
+    return this.prisma.user.create({
+      data: createUserDto,
+      select: userSelect,
+    });
   }
 
-  async findAll() {
-    const users = await this.prisma.user.findMany();
-    return users.map((user) => this.excludePassword(user));
+  async findAll(): Promise<UserEntity[]> {
+    const users = await this.prisma.user.findMany({ select: userSelect });
+    if (!users || users.length === 0) {
+      throw new NotFoundException('No hay usuarios registrados');
+    }
+    return users;
   }
 
-  async findOne(id: string) {
-    const user = await this.prisma.user.findUnique({ where: { id } });
+  async findOne(id: string): Promise<UserEntity> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: userSelect,
+    });
     if (!user) {
       throw new NotFoundException(`Usuario con id ${id} no encontrado`);
     }
-    return this.excludePassword(user);
+    return user;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity> {
     const existing = await this.prisma.user.findUnique({ where: { id } });
     if (!existing) {
       throw new NotFoundException(`Usuario con id ${id} no encontrado`);
     }
-    const user = await this.prisma.user.update({ where: { id }, data: updateUserDto });
-    return this.excludePassword(user);
+    return this.prisma.user.update({
+      where: { id },
+      data: updateUserDto,
+      select: userSelect,
+    });
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<UserEntity> {
     const existing = await this.prisma.user.findUnique({ where: { id } });
     if (!existing) {
       throw new NotFoundException(`Usuario con id ${id} no encontrado`);
     }
-    const user = await this.prisma.user.delete({ where: { id } });
-    return this.excludePassword(user);
+    return this.prisma.user.delete({
+      where: { id },
+      select: userSelect,
+    });
   }
 
   async findByEmail(email: string): Promise<User> {

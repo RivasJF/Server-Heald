@@ -2,9 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@n
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from 'generated/prisma';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { UserEntity } from './entities/user.entity';
 
 @ApiTags('Users')
 @Controller('user')
@@ -12,8 +12,13 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiOperation({ summary: 'Create a new user' })
+  @ApiResponse({
+    status: 201,
+    description: 'User created',
+    type: UserEntity,
+  })
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  create(@Body() createUserDto: CreateUserDto): Promise<UserEntity>{
     return this.userService.create(createUserDto);
   }
 
@@ -21,7 +26,7 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'List of users',
-    type: [CreateUserDto],
+    type: [UserEntity],
   })
   @Get()
   findAll() {
@@ -33,11 +38,11 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'User found',
-    type: CreateUserDto,
+    type: UserEntity,
   })
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): Promise<UserEntity>{
     return this.userService.findOne(id);
   }
 
@@ -47,11 +52,11 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'User updated',
-    type: CreateUserDto,
+    type: UserEntity,
   })
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<UserEntity>{
     return this.userService.update(id, updateUserDto);
   }
 
@@ -60,11 +65,11 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'User deleted',
-    type: CreateUserDto,
+    type: UserEntity,
   })
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: string): Promise<UserEntity>{
     return this.userService.remove(id);
   }
 }

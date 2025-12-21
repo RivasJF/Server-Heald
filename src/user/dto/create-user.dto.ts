@@ -9,6 +9,7 @@ import {
   IsEmail,
   IsPhoneNumber,
   IsDateString,
+  IsDate,
 } from 'class-validator';
 import { $Enums } from 'generated/prisma';
 
@@ -18,9 +19,8 @@ export class CreateUserDto {
     example: 'Chis',
     required: false,
   })
-  @IsOptional()
   @IsString()
-  name?: string;
+  name: string;
 
   @ApiProperty({
     description: 'Email of the user',
@@ -52,13 +52,14 @@ export class CreateUserDto {
   phoneNumber?: string;
 
   @ApiProperty({
-    description: 'Birth date of the user',
-    example: '2000-05-12T00:00:00.000Z',
+    description: 'Birth date of the user (Format: YYYY-MM-DD)',
+    example: '2000-05-12',
     required: false,
   })
   @IsOptional()
-  @IsDateString()
-  birthDate?: string;
+  @Transform(({ value }) => (value ? new Date(value) : value))
+  @IsDate({ message: 'birthDate must be a valid date (YYYY-MM-DD)' })
+  birthDate?: Date;
 
   @ApiProperty({ description: 'Role of the user', example: 'CLIENT', enum: $Enums.Role })
   @IsEnum($Enums.Role, { message: 'Rol no válido' })

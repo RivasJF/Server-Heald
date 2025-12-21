@@ -9,6 +9,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,//delete or ignore not varibles DTO
+    transform: true,
     forbidNonWhitelisted: true// trhow 400 bad request
   }));
 
