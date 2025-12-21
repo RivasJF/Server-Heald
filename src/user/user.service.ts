@@ -20,11 +20,6 @@ const userSelect = {
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  excludePassword<TUser extends { password?: string }>(user: TUser): Omit<TUser, 'password'> {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...result } = user;
-    return result;
-  }
   
   async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     return this.prisma.user.create({

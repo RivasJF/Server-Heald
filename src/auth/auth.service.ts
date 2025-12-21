@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { LoginDto } from './dto/login.dto';
 import { UserService } from 'src/user/user.service';
+import { excludePassword } from 'src/utils/response.auth';
 
 @Injectable()
 export class AuthService {
@@ -30,7 +31,7 @@ export class AuthService {
 
         return {
             access_token: token,
-            user:this.userService.excludePassword(user)
+            user:excludePassword(user)
         }
     }
 }
