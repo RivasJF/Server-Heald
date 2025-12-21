@@ -13,7 +13,7 @@ export class AuthService {
     ){}
 
     async login(loginDto: LoginDto){
-        const user = await this.userService.findByEmail(loginDto.email);
+        const user = await this.userService.findByEmailInternal(loginDto.email);
 
         const isMatch = loginDto.password === user.password;
 

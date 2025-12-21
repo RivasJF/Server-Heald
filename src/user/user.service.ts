@@ -20,7 +20,6 @@ const userSelect = {
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  
   async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     return this.prisma.user.create({
       data: createUserDto,
@@ -28,12 +27,8 @@ export class UserService {
     });
   }
 
-  async findAll(): Promise<UserEntity[]> {
-    const users = await this.prisma.user.findMany({ select: userSelect });
-    if (!users || users.length === 0) {
-      throw new NotFoundException('No hay usuarios registrados');
-    }
-    return users;
+  async findAll(): Promise<ReadonlyArray<UserEntity>> {
+    return await this.prisma.user.findMany({ select: userSelect });
   }
 
   async findOne(id: string): Promise<UserEntity> {
@@ -48,29 +43,30 @@ export class UserService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity> {
-    const existing = await this.prisma.user.findUnique({ where: { id } });
-    if (!existing) {
+    try {
+      return await this.prisma.user.update({
+        where: { id },
+        data: updateUserDto,
+        select: userSelect,
+      });
+    } catch {
       throw new NotFoundException(`Usuario con id ${id} no encontrado`);
     }
-    return this.prisma.user.update({
-      where: { id },
-      data: updateUserDto,
-      select: userSelect,
-    });
   }
 
   async remove(id: string): Promise<UserEntity> {
-    const existing = await this.prisma.user.findUnique({ where: { id } });
-    if (!existing) {
+    try {
+      return await this.prisma.user.delete({
+        where: { id },
+        select: userSelect,
+      });
+    } catch {
       throw new NotFoundException(`Usuario con id ${id} no encontrado`);
     }
-    return this.prisma.user.delete({
-      where: { id },
-      select: userSelect,
-    });
   }
 
-  async findByEmail(email: string): Promise<User> {
+  // service to login => (Internal) || service to public API !=/Internal/ 
+  async findByEmailInternal(email: string): Promise<User> {
     const user = await this.prisma.user.findUnique({ where: { email } });
     if (!user) {
       throw new NotFoundException(`Usuario con email ${email} no encontrado`);
