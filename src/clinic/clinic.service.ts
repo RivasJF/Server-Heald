@@ -96,18 +96,25 @@ export class ClinicService {
     return clinicsWithDistance;
   }
 
-  private getDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-    const R = 6371e3; // Radio de la Tierra en metros
-    const φ1 = (lat1 * Math.PI) / 180; // φ, λ en radianes
-    const φ2 = (lat2 * Math.PI) / 180;
-    const Δφ = ((lat2 - lat1) * Math.PI) / 180;
-    const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+    private getDistance(lat1: number, lon1: number, lat2: number, lon2: number ): number {
 
-    const a =
-      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const EARTH_RADIUS_IN_METERS = 6371e3;
+    const lat1InRadians = (lat1 * Math.PI) / 180;
+    const lat2InRadians = (lat2 * Math.PI) / 180;
 
-    return R * c; // en metros
+    const deltaLatitudeInRadians = ((lat2 - lat1) * Math.PI) / 180;
+    const deltaLongitudeInRadians = ((lon2 - lon1) * Math.PI) / 180;
+
+    const haversineCentralAngle =
+      Math.pow(Math.sin(deltaLatitudeInRadians / 2), 2) +
+      Math.cos(lat1InRadians) *
+        Math.cos(lat2InRadians) *
+        Math.pow(Math.sin(deltaLongitudeInRadians / 2), 2);
+
+    const angularDistance = 2 * Math.atan2(Math.sqrt(haversineCentralAngle), Math.sqrt(1 - haversineCentralAngle));
+
+    const distanceInMeters = EARTH_RADIUS_IN_METERS * angularDistance;
+
+    return distanceInMeters;
   }
 }
