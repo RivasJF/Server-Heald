@@ -1,31 +1,38 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { DoctorService } from './doctor.service';
-import { CreateDoctorDto } from './dto/create-doctor.dto';
-import { UpdateDoctorDto } from './dto/update-doctor.dto';
+import { CreateDoctorDto } from './dto/doctorCreateRequest.dto';
+import { UpdateDoctorDto } from './dto/doctorUpdateRequest.dto';
 import { Doctor } from 'generated/prisma';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { CreateDoctorUseCase } from './use-cases/create-doctor.use-case';
+import { DoctorResponseDto } from './dto/doctorResponse.dto';
+import { GetAllDoctorUseCase } from './use-cases/get-all-doctor.use-case';
 
 @ApiTags('Doctors')
 @Controller('doctor')
 export class DoctorController {
-  constructor(private readonly doctorService: DoctorService) {}
+  constructor(
+    private readonly doctorService: DoctorService,
+    private readonly createDoctorUseCase: CreateDoctorUseCase,
+    private readonly getAllDoctorUseCase: GetAllDoctorUseCase
+  ) {}
 
   @ApiOperation({ summary: 'Create a new doctor' })
   @Post()
-  create(@Body() createDoctorDto: CreateDoctorDto): Promise<Doctor> {
-    return this.doctorService.create(createDoctorDto);
+  create(@Body() createDoctorDto: CreateDoctorDto): Promise<DoctorResponseDto> {
+    return this.createDoctorUseCase.execute(createDoctorDto);
   }
 
   @ApiOperation({ summary: 'Get all doctors' })
   @ApiResponse({
       status: 200,
       description: 'List of doctors',
-      type: [CreateDoctorDto],
+      type: [DoctorResponseDto],
     })
   @Get()
-  findAll(): Promise<Doctor[]> {
-    return this.doctorService.findAll();
+  findAll(): Promise<DoctorResponseDto[]> {
+    return this.getAllDoctorUseCase.execute();
   }
 
   @ApiOperation({ summary: 'Get a doctor' })
