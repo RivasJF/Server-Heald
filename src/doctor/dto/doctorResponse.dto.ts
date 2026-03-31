@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsOptional, IsEmail, IsPhoneNumber, IsDate, IsUUID } from 'class-validator';
+import { User } from 'src/user/entities/user.entity';
 
 export class DoctorResponseDto {
   @ApiProperty({
@@ -15,38 +16,6 @@ export class DoctorResponseDto {
   })
   @IsUUID()
   userId: string;
-
-  @ApiProperty({
-    description: "Doctor's full name",
-    example: 'Dr. John Doe',
-  })
-  @IsString()
-  name: string;
-
-  @ApiProperty({
-    description: "Doctor's email address",
-    example: 'john.doe@example.com',
-  })
-  @IsEmail()
-  email: string;
-
-  @ApiProperty({
-    description: "Doctor's phone number",
-    example: '+12133734253',
-    required: false,
-  })
-  @IsOptional()
-  @IsPhoneNumber()
-  phoneNumber?: string;
-
-  @ApiProperty({
-    description: "Doctor's birth date",
-    example: '1980-01-01T00:00:00.000Z',
-    required: false,
-  })
-  @IsOptional()
-  @IsDate()
-  birthDate?: Date;
 
   @ApiProperty({
     description: "Doctor's speciality",
@@ -66,7 +35,19 @@ export class DoctorResponseDto {
   @IsString()
   biography?: string;
 
-  createdAt?: Date;
+  @ApiProperty({
+    description: "Doctor's creation date",
+    example: '2026-03-31T19:41:08.000Z',
+  })
+  createdAt: string;
 
-  updatedAt?: Date;
+  @ApiProperty({
+    description: "Doctor's last update date",
+    example: '2026-03-31T20:10:00.000Z',
+  })
+  updatedAt: string;
+
+  constructor(data: Partial<DoctorResponseDto>) {
+    Object.assign(this, data);
+  }
 }

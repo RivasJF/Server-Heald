@@ -1,13 +1,15 @@
 import { DoctorResponseDto } from "../dto/doctorResponse.dto";
 import { Doctor } from "../entities/doctor.entity";
 
-export function toDto(doctor: Doctor) {
-    const dto = new DoctorResponseDto();
-    dto.id = doctor.getId()!;
-    dto.userId = doctor.getUserId();
-    dto.speciality = doctor.getSpeciality();
-    dto.biography = doctor.getBiography();
-    dto.createdAt = doctor.getCreatedAt();
-    dto.updatedAt = doctor.getUpdatedAt();
-    return dto;
+export class DoctorMapper {
+    static toDto(doctor: Doctor): DoctorResponseDto {
+        return new DoctorResponseDto({
+            id: doctor.getId(),
+            userId: doctor.getUserId(),
+            speciality: doctor.getSpeciality(),
+            biography: doctor.getBiography(),
+            createdAt: doctor.getCreatedAt()?.toISOString(),
+            updatedAt: doctor.getUpdatedAt()?.toISOString(),
+        });
+    }
 }

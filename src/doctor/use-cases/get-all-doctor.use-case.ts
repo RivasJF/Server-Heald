@@ -1,6 +1,6 @@
 import { Inject, Injectable} from '@nestjs/common';
 import { IDoctorRepository } from '../repositories/doctor.repository.imp';
-import { toDto } from '../mapper/doctor.mapper';
+import { DoctorMapper } from '../mapper/doctor.mapper';
 
 @Injectable()
 export class GetAllDoctorUseCase {
@@ -11,6 +11,6 @@ export class GetAllDoctorUseCase {
 
   async execute() {
     const doctors = await this.doctorRepo.findMany();
-    return doctors.map((doctor) => toDto(doctor));
+    return doctors.map((doctor) => DoctorMapper.toDto(doctor));
   }
 }
