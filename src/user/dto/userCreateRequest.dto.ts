@@ -41,7 +41,7 @@ export class UserCreateDto {
 
   @ApiProperty({
     description: 'Phone number of the user in E.164 format',
-    example: '+12133734253',
+    example: '+525544332211',
     required: false,
   })
   @IsOptional()

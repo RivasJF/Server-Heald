@@ -23,14 +23,16 @@ export class UserResponseDto {
   @ApiPropertyOptional({
     description: 'Número de teléfono del usuario',
     example: '+573001112233',
+    nullable: true,
   })
-  readonly phoneNumber?: string;
+  readonly phoneNumber: string | null;
 
   @ApiPropertyOptional({
     description: 'Fecha de nacimiento en formato ISO',
     example: '1998-05-14T00:00:00.000Z',
+    nullable: true,
   })
-  readonly birthDate?: string;
+  readonly birthDate: string | null;
 
   @ApiProperty({
     description: 'Rol del usuario',
