@@ -10,4 +10,8 @@ export class LoginResponseDto {
 
   @ApiProperty({ type: () => UserResponseDto })
   user: UserResponseDto;
+
+  constructor(data: Partial<LoginResponseDto>) {
+    Object.assign(this, data);
+  }
 }

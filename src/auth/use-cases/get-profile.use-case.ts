@@ -1,6 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { IUserRepository } from 'src/user/repositories/user.repository.imp';
 import { UserMapper } from 'src/user/mapper/user.mapper';
+import { AuthRequest } from '../interfaces/auth-request.interface';
 
 @Injectable()
 export class GetProfileUseCase {
@@ -9,10 +10,10 @@ export class GetProfileUseCase {
     private readonly userRepository: IUserRepository,
   ) {}
 
-  async execute(userId: string) {
-    const user = await this.userRepository.findById(userId);
+  async execute(req: AuthRequest) {
+    const user = await this.userRepository.findById(req.user.id);
     if (!user) {
-      throw new NotFoundException(`Usuario con id ${userId} no encontrado`);
+      throw new NotFoundException(`Usuario con id ${req.user.id} no encontrado`);
     }
 
     return UserMapper.toDto(user);
