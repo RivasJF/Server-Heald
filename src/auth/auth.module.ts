@@ -5,6 +5,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { UserModule } from 'src/user/user.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { LoginUseCase } from './use-cases/login.use-case';
+import { GetProfileUseCase } from './use-cases/get-profile.use-case';
 
 @Module({
   imports:[
@@ -15,7 +17,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     signOptions: { expiresIn: '30d' },
   })],
   controllers: [AuthController],
-  providers: [AuthService,JwtStrategy],
+  providers: [AuthService, JwtStrategy, LoginUseCase, GetProfileUseCase],
   exports: [AuthService]
 })
 export class AuthModule {}

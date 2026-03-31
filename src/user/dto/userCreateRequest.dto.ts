@@ -27,7 +27,6 @@ export class UserCreateDto {
   })
   @IsEmail()
   @IsNotEmpty()
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-call
   @Transform(({ value }) => value?.toLowerCase())
   email: string;
 

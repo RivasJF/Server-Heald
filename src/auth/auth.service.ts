@@ -1,37 +1,20 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { Injectable } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
-import { UserService } from 'src/user/user.service';
-import { excludePassword } from 'src/utils/response.auth';
+import { LoginUseCase } from './use-cases/login.use-case';
+import { GetProfileUseCase } from './use-cases/get-profile.use-case';
 
 @Injectable()
 export class AuthService {
     constructor(
-        private readonly userService: UserService,
-        private readonly jwtService: JwtService
-    ){}
+        private readonly loginUseCase: LoginUseCase,
+        private readonly getProfileUseCase: GetProfileUseCase,
+    ) {}
 
-    async login(loginDto: LoginDto){
-        const user = await this.userService.findByEmailInternal(loginDto.email);
+    async login(loginDto: LoginDto) {
+        return this.loginUseCase.execute(loginDto);
+    }
 
-        const isMatch = loginDto.password === user.password;
-
-        if(!isMatch){
-            throw new UnauthorizedException('Password incorrect')
-        }
-
-        const payload: JwtPayload = { 
-            sub: user.id, 
-            email: user.email, 
-            role: user.role
-        };
-
-        const token = this.jwtService.sign(payload);
-
-        return {
-            access_token: token,
-            user:excludePassword(user)
-        }
+    async getProfile(userId: string) {
+        return this.getProfileUseCase.execute(userId);
     }
 }

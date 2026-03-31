@@ -23,7 +23,6 @@ export class UpdateUserDto {
   })
   @IsOptional()
   @IsEmail()
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-member-access
   @Transform(({ value }) => value?.toLowerCase())
   email?: string;
 

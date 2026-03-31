@@ -5,14 +5,13 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from './guards/jwt.guard';
-import { UserService } from 'src/user/user.service';
+import { UserResponseDto } from 'src/user/dto/userResponse.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly userService: UserService,
   ) {}
 
   @ApiOperation({ summary: 'Login' })
@@ -28,10 +27,15 @@ export class AuthController {
 
   @ApiOperation({ summary: 'Get current user profile' })
   @ApiBearerAuth('defaultBearerAuth')
+  @ApiResponse({
+    status: 200,
+    description: 'Current authenticated user profile',
+    type: UserResponseDto,
+  })
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getProfile(@Req() req: any) {
     const userId = req.user?.id;
-    return this.userService.findOne(userId);
+    return this.authService.getProfile(userId);
   }
 }
