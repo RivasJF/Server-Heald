@@ -7,11 +7,13 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,//delete or ignore not varibles DTO
-    transform: true,
-    forbidNonWhitelisted: true// trhow 400 bad request
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, //delete or ignore not varibles DTO
+      transform: true,
+      forbidNonWhitelisted: true, // trhow 400 bad request
+    }),
+  );
 
   const httpAdapter = app.getHttpAdapter();
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
@@ -28,16 +30,16 @@ async function bootstrap() {
     .addTag('Doctor-Status')
     .addTag('Appointment')
     .addBearerAuth(
-    {
-      type: 'http',
-      scheme: 'bearer',
-      bearerFormat: 'JWT',
-      name: 'JWT',
-      description: 'Enter JWT token',
-      in: 'header',
-    },
-    'defaultBearerAuth'
-  )
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'defaultBearerAuth',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

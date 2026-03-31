@@ -71,7 +71,8 @@ export class UserRepository implements IUserRepository {
   }
 
   private toDomain(data: UserSchema) {
-    const user =User.create(data.name,
+    const user = User.create(
+      data.name,
       data.email,
       data.password,
       data.role as Role,
@@ -79,7 +80,8 @@ export class UserRepository implements IUserRepository {
       data.birthDate === null ? undefined : data.birthDate,
       data.id,
       data.createdAt,
-      data.updatedAt);
+      data.updatedAt,
+    );
     return user;
   }
 }

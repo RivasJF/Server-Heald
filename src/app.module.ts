@@ -10,6 +10,16 @@ import { AppointmentModule } from './appointment/appointment.module';
 import { DoctorStatusModule } from './doctor-status/doctor-status.module';
 
 @Module({
-  imports: [PrismaModule, ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true}), UserModule, DoctorModule, AuthModule, ScheduleModule, ClinicModule, AppointmentModule, DoctorStatusModule],
+  imports: [
+    PrismaModule,
+    ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
+    UserModule,
+    DoctorModule,
+    AuthModule,
+    ScheduleModule,
+    ClinicModule,
+    AppointmentModule,
+    DoctorStatusModule,
+  ],
 })
 export class AppModule {}

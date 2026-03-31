@@ -8,38 +8,69 @@ export type UpdateUserData = {
 };
 
 export class User {
-
-  private id?: string;
+  private readonly id?: string;
   private name: string;
   private email: string;
   private password: string;
   private phoneNumber?: string;
-  private birthDate?: Date;
-  private role: Role;
-  private createdAt?: Date;
-  private updatedAt?: Date;
+  private readonly birthDate?: Date;
+  private readonly role: Role;
+  private readonly createdAt?: Date;
+  private readonly updatedAt?: Date;
 
-  private constructor(name: string, email: string, password: string, role: Role, phoneNumber?: string, birthDate?: Date, id?: string, createdAt?: Date, updatedAt?: Date) {
-    this.id = id
-    this.name = name
-    this.email = email
-    this.password = password
-    this.phoneNumber = phoneNumber
-    this.birthDate = birthDate
-    this.role = role
-    this.createdAt = createdAt
-    this.updatedAt = updatedAt
+  private constructor(
+    name: string,
+    email: string,
+    password: string,
+    role: Role,
+    phoneNumber?: string,
+    birthDate?: Date,
+    id?: string,
+    createdAt?: Date,
+    updatedAt?: Date,
+  ) {
+    this.id = id;
+    this.name = name;
+    this.email = email;
+    this.password = password;
+    this.phoneNumber = phoneNumber;
+    this.birthDate = birthDate;
+    this.role = role;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
   }
 
-  static create(name: string, email: string, password: string, role: Role, phoneNumber?: string, birthDate?: Date, id?: string, createdAt?: Date, updatedAt?: Date) {
-    if(name.length<3) throw new Error("Name must be longer than 3 letters");
-    if(password.length<6) throw new Error("Password must be at least 6 characters long");
-    return new User(name, email, password, role, phoneNumber, birthDate, id, createdAt, updatedAt);
+  static create(
+    name: string,
+    email: string,
+    password: string,
+    role: Role,
+    phoneNumber?: string,
+    birthDate?: Date,
+    id?: string,
+    createdAt?: Date,
+    updatedAt?: Date,
+  ) {
+    if (name.length < 3) throw new Error('Name must be longer than 3 letters');
+    if (password.length < 6)
+      throw new Error('Password must be at least 6 characters long');
+    return new User(
+      name,
+      email,
+      password,
+      role,
+      phoneNumber,
+      birthDate,
+      id,
+      createdAt,
+      updatedAt,
+    );
   }
 
   public updateData(data: UpdateUserData) {
     if (data.name !== undefined) {
-      if (data.name.length < 3) throw new Error('Name must be longer than 3 letters');
+      if (data.name.length < 3)
+        throw new Error('Name must be longer than 3 letters');
       this.name = data.name;
     }
 
@@ -48,7 +79,8 @@ export class User {
     }
 
     if (data.password !== undefined) {
-      if (data.password.length < 6) throw new Error('Password must be at least 6 characters long');
+      if (data.password.length < 6)
+        throw new Error('Password must be at least 6 characters long');
       this.password = data.password;
     }
 

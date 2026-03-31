@@ -17,8 +17,8 @@ import { DeleteUserUseCase } from './use-cases/delete-user.use-case';
     DeleteUserUseCase,
     {
       provide: 'IUserRepository',
-      useClass: UserRepository
-    }
+      useClass: UserRepository,
+    },
   ],
   exports: ['IUserRepository'],
 })

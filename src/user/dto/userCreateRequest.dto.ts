@@ -8,7 +8,6 @@ import {
   MinLength,
   IsEmail,
   IsPhoneNumber,
-  IsDateString,
   IsDate,
 } from 'class-validator';
 import { Role } from '../entities/user.enum';
@@ -28,6 +27,7 @@ export class UserCreateDto {
   })
   @IsEmail()
   @IsNotEmpty()
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-call
   @Transform(({ value }) => value?.toLowerCase())
   email: string;
 
@@ -47,7 +47,8 @@ export class UserCreateDto {
   })
   @IsOptional()
   @IsPhoneNumber(undefined, {
-    message: 'El número de teléfono debe ser un número de teléfono válido en formato E.164',
+    message:
+      'El número de teléfono debe ser un número de teléfono válido en formato E.164',
   })
   phoneNumber?: string;
 
@@ -57,11 +58,16 @@ export class UserCreateDto {
     required: false,
   })
   @IsOptional()
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-argument
   @Transform(({ value }) => (value ? new Date(value) : value))
   @IsDate({ message: 'birthDate must be a valid date (YYYY-MM-DD)' })
   birthDate?: Date;
 
-  @ApiProperty({ description: 'Role of the user', example: 'CLIENT', enum: Role })
+  @ApiProperty({
+    description: 'Role of the user',
+    example: 'CLIENT',
+    enum: Role,
+  })
   @IsEnum(Role, { message: 'Rol no válido' })
   @IsNotEmpty()
   role: Role;
