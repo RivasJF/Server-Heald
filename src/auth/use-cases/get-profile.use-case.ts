@@ -1,6 +1,6 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { IUserRepository } from 'src/user/repositories/user.repository.imp';
-import { UserMapper } from 'src/user/mapper/mapper';
+import { UserMapper } from 'src/user/mapper/user.mapper';
 
 @Injectable()
 export class GetProfileUseCase {

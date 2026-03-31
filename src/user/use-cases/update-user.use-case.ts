@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserDto } from '../dto/userUpdateRequest.dto';
-import { UserMapper } from '../mapper/mapper';
+import { UserMapper } from '../mapper/user.mapper';
 import { IUserRepository } from '../repositories/user.repository.imp';
 
 @Injectable()

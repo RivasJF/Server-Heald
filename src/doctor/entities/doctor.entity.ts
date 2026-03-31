@@ -1,3 +1,5 @@
+import { DoctorServiceStatus } from 'src/doctor-status/entities/doctor-service-status.entity';
+import { User } from 'src/user/entities/user.entity';
 
 export type UpdateDoctorData = {
     speciality?: string;
@@ -11,31 +13,51 @@ export class Doctor {
     private biography?: string ;
     private readonly createdAt?: Date;
     private readonly updatedAt?: Date;
+    private readonly user?: User;
+    private readonly serviceStatus?: DoctorServiceStatus;
 
-    private constructor(userid: string, speciality?: string, biography?: string, id?: string, createdAt?: Date, updatedAt?: Date){
+    private constructor(
+        userid: string,
+        speciality?: string,
+        biography?: string,
+        id?: string,
+        createdAt?: Date,
+        updatedAt?: Date,
+        user?: User,
+        serviceStatus?: DoctorServiceStatus
+    ) {
         this.id = id;
-        this.userId = userid
-        this.speciality = speciality
-        this.biography = biography
-        this.createdAt = createdAt
-        this.updatedAt = updatedAt
+        this.userId = userid;
+        this.speciality = speciality;
+        this.biography = biography;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.user = user;
+        this.serviceStatus = serviceStatus;
     }
 
-    static create(userid: string, speciality?: string, biography?: string, id?: string, createdAt?: Date, updatedAt?: Date) {
-        if (!userid || userid.trim().length === 0) {
-            throw new Error('User id is required');
-        }
+    static create(
+        userid: string,
+        speciality?: string,
+        biography?: string,
+        id?: string,
+        createdAt?: Date,
+        updatedAt?: Date,
+        user?: User,
+        serviceStatus?: DoctorServiceStatus
+    ) {
 
-        return new Doctor(userid, speciality, biography, id, createdAt, updatedAt);
+        return new Doctor(userid, speciality, biography, id, createdAt, updatedAt, user, serviceStatus);
+    
     }
 
-        updateData(data: UpdateDoctorData) {
-        if (data.speciality !== undefined) {
-            this.speciality = data.speciality;
+    updateData(updateData: UpdateDoctorData,){
+        if (updateData.speciality !== undefined) {
+            this.speciality = updateData.speciality;
         }
 
-        if (data.biography !== undefined) {
-            this.biography = data.biography;
+        if (updateData.biography !== undefined) {
+            this.biography = updateData.biography;
         }
     }
 
@@ -63,4 +85,11 @@ export class Doctor {
         return this.updatedAt;
     }
 
+    getUser(){
+        return this.user;
+    }
+
+    getServiceStatus(){
+        return this.serviceStatus;
+    }
 }

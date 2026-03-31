@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { UserMapper } from '../mapper/mapper';
+import { UserMapper } from '../mapper/user.mapper';
 import { IUserRepository } from '../repositories/user.repository.imp';
 
 @Injectable()

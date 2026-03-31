@@ -1,6 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsOptional, IsEmail, IsPhoneNumber, IsDate, IsUUID } from 'class-validator';
-import { User } from 'src/user/entities/user.entity';
+import { UserResponseDto } from 'src/user/dto/userResponse.dto';
+import { DoctorServiceStatusResponseDto } from 'src/doctor-status/dto/doctor-service-statusResponse.dto';
 
 export class DoctorResponseDto {
   @ApiProperty({
@@ -46,6 +47,19 @@ export class DoctorResponseDto {
     example: '2026-03-31T20:10:00.000Z',
   })
   updatedAt: string;
+
+  @ApiPropertyOptional({
+    description: 'Associated user data for this doctor',
+    type: () => UserResponseDto,
+  })
+  user?: UserResponseDto;
+
+  @ApiPropertyOptional({
+    description: 'Estado de servicio actual del doctor',
+    type: () => DoctorServiceStatusResponseDto,
+    nullable: true,
+  })
+  serviceStatus?: DoctorServiceStatusResponseDto;
 
   constructor(data: Partial<DoctorResponseDto>) {
     Object.assign(this, data);
