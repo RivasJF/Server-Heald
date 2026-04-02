@@ -28,5 +28,6 @@ import { DeleteDoctorUseCase } from './use-cases/delete-doctor.use-case';
       useClass: DoctorRepository
     }
   ],
+  exports: ['IDoctorRepository']
 })
 export class DoctorModule {}

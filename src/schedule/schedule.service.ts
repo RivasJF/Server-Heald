@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateDoctorScheduleDto } from './dto/create-schedule.dto';
+import { CreateDoctorScheduleDto } from './dto/create-scheduleRequest.dto';
 import { Day } from 'generated/prisma';
-import { UpdateDoctorScheduleDto } from './dto/update-schedule.dto';
+import { UpdateDoctorScheduleDto } from './dto/update-scheduleRequest.dto';
 import { Prisma } from 'generated/prisma';
 
 @Injectable()

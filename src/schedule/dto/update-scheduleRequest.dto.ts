@@ -6,8 +6,8 @@ import {
   Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { DayDto } from './day.dto';
-import { BreakDto } from './break.dto';
+import { DayDto } from './dayRequest.dto';
+import { BreakDto } from './breakRequest.dto';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateDoctorScheduleDto {
