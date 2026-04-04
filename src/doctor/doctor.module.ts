@@ -9,10 +9,12 @@ import { GetDoctorByIdUseCase } from './use-cases/get-doctor-by-id.use-case';
 import { GetDoctorByUserIdUseCase } from './use-cases/get-doctor-by-user-id.use-case';
 import { UpdateDoctorUseCase } from './use-cases/update-doctor.use-case';
 import { DeleteDoctorUseCase } from './use-cases/delete-doctor.use-case';
+import { DoctorStatusModule } from 'src/doctor-status/doctor-status.module';
 
 @Module({
   imports: [
-    UserModule
+    UserModule,
+    DoctorStatusModule
     ],
   controllers: [DoctorController],
   providers: [

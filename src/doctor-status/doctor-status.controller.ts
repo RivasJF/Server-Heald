@@ -8,19 +8,31 @@ import {
   Delete,
   Get,
 } from '@nestjs/common';
-import { DoctorStatusService } from './doctor-status.service';
 import { CreateDayOffDto } from './dto/create-day-off.dto';
 import { UpdateServiceStatusDto } from './dto/update-service-status.dto';
 import { CreateDayCloseDto } from './dto/create-day-close';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { CreateDayOffUseCase } from './use-cases/create-day-off.use-case';
+import { GetAllDayOffsUseCase } from './use-cases/get-all-day-offs.use-case';
+import { DeleteDayOffUseCase } from './use-cases/delete-day-off.use-case';
+import { CreateDayCloseUseCase } from './use-cases/create-day-close.use-case';
+import { DeleteDayCloseUseCase } from './use-cases/delete-day-close.use-case';
+import { SetServiceStatusUseCase } from './use-cases/set-service-status.use-case';
 
 @ApiTags('Doctor-Status')
 @ApiBearerAuth('defaultBearerAuth')
 @UseGuards(AuthGuard('jwt'))
 @Controller('doctor-status')
 export class DoctorStatusController {
-  constructor(private readonly doctorStatusService: DoctorStatusService) {}
+  constructor(
+    private readonly createDayOffUseCase: CreateDayOffUseCase,
+    private readonly getAllDayOffsUseCase: GetAllDayOffsUseCase,
+    private readonly deleteDayOffUseCase: DeleteDayOffUseCase,
+    private readonly createDayCloseUseCase: CreateDayCloseUseCase,
+    private readonly deleteDayCloseUseCase: DeleteDayCloseUseCase,
+    private readonly setServiceStatusUseCase: SetServiceStatusUseCase,
+  ) {}
 
   @Post(':doctorId/day-off')
   @ApiOperation({ summary: 'Set a day off for a doctor' })
@@ -28,13 +40,13 @@ export class DoctorStatusController {
     @Param('doctorId') doctorId: string,
     @Body() dto: CreateDayOffDto,
   ) {
-    return this.doctorStatusService.setDayOff(doctorId, dto);
+    return this.createDayOffUseCase.execute(doctorId, dto);
   }
 
   @Get(':doctorId/day-off')
   @ApiOperation({ summary: 'Get all day offs for a doctor' })
   async getAllDayOffs(@Param('doctorId') doctorId: string) {
-    return this.doctorStatusService.getAllDayOffs(doctorId);
+    return this.getAllDayOffsUseCase.execute(doctorId);
   }
 
   @Delete(':doctorId/day-off')
@@ -43,7 +55,7 @@ export class DoctorStatusController {
     @Param('doctorId') doctorId: string,
     @Body() dto: CreateDayOffDto,
   ) {
-    return this.doctorStatusService.deleteDayOff(doctorId, dto);
+    return this.deleteDayOffUseCase.execute(doctorId, dto.date);
   }
 
   @Post(':doctorId/daily-closure')
@@ -52,7 +64,7 @@ export class DoctorStatusController {
     @Param('doctorId') doctorId: string,
     @Body() dto: CreateDayCloseDto,
   ) {
-    return this.doctorStatusService.setDailyClosure(doctorId, dto);
+    return this.createDayCloseUseCase.execute(doctorId, dto);
   }
 
   @Delete(':doctorId/daily-closure')
@@ -61,7 +73,7 @@ export class DoctorStatusController {
     @Param('doctorId') doctorId: string,
     @Body() dto: CreateDayOffDto,
   ) {
-    return this.doctorStatusService.deleteDailyClosure(doctorId, dto);
+    return this.deleteDayCloseUseCase.execute(doctorId, dto);
   }
 
   @Patch(':doctorId/service-status')
@@ -70,6 +82,6 @@ export class DoctorStatusController {
     @Param('doctorId') doctorId: string,
     @Body() dto: UpdateServiceStatusDto,
   ) {
-    return this.doctorStatusService.setServiceStatus(doctorId, dto);
+    return this.setServiceStatusUseCase.execute(doctorId, dto);
   }
 }
