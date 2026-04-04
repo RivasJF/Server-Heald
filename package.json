@@ -9,10 +9,11 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
+    "typecheck": "tsc --noEmit",
     "test": "jest --config jest.config.js",
     "test:watch": "jest --config jest.config.js --watch",
-    "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
+    "start:dev": "NODE_OPTIONS=--max-old-space-size=1024 nest start --watch",
+    "start:debug": "NODE_OPTIONS=--max-old-space-size=1024 nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "start:prod:migrate": "npx prisma migrate deploy && node dist/main.js"
