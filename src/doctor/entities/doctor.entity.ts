@@ -61,6 +61,10 @@ export class Doctor {
         }
     }
 
+    serviceIsActive(){
+        return this.serviceStatus?.getActive();
+    }
+
     getId(){
         return this.id;
     }

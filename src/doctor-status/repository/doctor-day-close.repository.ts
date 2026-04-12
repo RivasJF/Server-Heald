@@ -37,7 +37,7 @@ export class DoctorDayCloseRepository implements IDoctorDayCloseRepository {
 
   async findByDoctorIdAndDate(
     doctorId: string,
-    date: Date,
+    date: string,
   ): Promise<DoctorDayClose | null> {
     const row = await this.prisma.doctorDayClose.findFirst({
       where: { doctorId, date },

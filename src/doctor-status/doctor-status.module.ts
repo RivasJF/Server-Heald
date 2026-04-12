@@ -34,6 +34,10 @@ import { SetServiceStatusUseCase } from './use-cases/set-service-status.use-case
       useClass: DoctorServiceStatusRepository,
     },
   ],
-  exports: ['IDoctorServiceStatusRepository'],
+  exports: [
+    'IDoctorServiceStatusRepository',
+    'IDoctorDayOffRepository',
+    'IDoctorDayCloseRepository',
+  ],
 })
 export class DoctorStatusModule {}

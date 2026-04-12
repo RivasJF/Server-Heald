@@ -17,6 +17,15 @@ type DoctorWithInclude = DoctorSchema & {
 export class DoctorRepository implements IDoctorRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findByIdWithServiceStatus(id: string): Promise<Doctor | null> {
+    const doctor = await this.prisma.doctor.findUnique({
+      where: { id },
+      include: { serviceStatus: true },
+    });
+    if (!doctor) return null;
+    return this.toDomain(doctor);
+  }
+
   async findMany(): Promise<Doctor[]> {
     const doctors = await this.prisma.doctor.findMany();
     return doctors.map((doctor) => this.toDomain(doctor));

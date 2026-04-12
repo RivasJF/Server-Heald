@@ -13,13 +13,23 @@ import { AppointmentService } from './appointment.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { FindAppointmentsByPatientUseCase } from './use-case/find-appointments-by-patient.use-case';
+import { FindAppointmentsByDoctorUseCase } from './use-case/find-appointments-by-doctor.use-case';
+import { GenerateAvailabilityUseCase } from './use-case/generate-availability.use-case';
+import { CancelAppointmentUseCase } from './use-case/cancel-appointment.use-case';
 
 @ApiTags('Appointment')
 @ApiBearerAuth('defaultBearerAuth')
 @UseGuards(AuthGuard('jwt'))
 @Controller('appointment')
 export class AppointmentController {
-  constructor(private readonly appointmentService: AppointmentService) {}
+  constructor(
+    private readonly appointmentService: AppointmentService,
+    private readonly findByPatientUseCase: FindAppointmentsByPatientUseCase,
+    private readonly findByDoctorUseCase: FindAppointmentsByDoctorUseCase,
+    private readonly generateAvailabilityUseCase: GenerateAvailabilityUseCase,
+    private readonly cancelAppointmentUseCase: CancelAppointmentUseCase,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a new appointment' })
@@ -33,7 +43,8 @@ export class AppointmentController {
     @Param('doctorId') doctorId: string,
     @Param('date') date: string,
   ) {
-    return this.appointmentService.getAvailabilityForDay(doctorId, date);
+    return this.generateAvailabilityUseCase.execute(doctorId, date);
+    //return this.appointmentService.getAvailabilityForDay(doctorId, date);
   }
 
   @Get('doctor/:doctorId')

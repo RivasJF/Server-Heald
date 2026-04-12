@@ -26,5 +26,6 @@ import { DoctorModule } from 'src/doctor/doctor.module';
       useClass: ClinicRepository,
     },
   ],
+  exports: ['IClinicRepository'],
 })
 export class ClinicModule {}

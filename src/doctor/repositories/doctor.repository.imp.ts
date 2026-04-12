@@ -2,6 +2,7 @@ import { Doctor } from "../entities/doctor.entity";
 
 export interface IDoctorRepository {
     findById(id: string): Promise<Doctor | null>;
+    findByIdWithServiceStatus(id: string): Promise<Doctor | null>;
     findByUserId(userId: string): Promise<Doctor | null>;
     findByUserIdWithUserAndServiceStatus(userId: string): Promise<Doctor | null>;
     findMany(): Promise<Doctor[]>;

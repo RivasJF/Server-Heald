@@ -20,5 +20,6 @@ import { DoctorModule } from 'src/doctor/doctor.module';
       useClass: ScheduleRepository,
     },
   ],
+  exports: ['IScheduleRepository'],
 })
 export class ScheduleModule {}
