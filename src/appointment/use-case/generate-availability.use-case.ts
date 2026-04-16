@@ -54,7 +54,7 @@ export class GenerateAvailabilityUseCase {
             throw new Error(`No schedule found for doctor with id ${id} on ${weekday}`);
         }
 
-        const isDayOff = `${date}T00:00:00.000Z`
+        const isDayOff = new Date(date)
 
         const doctorDayOff = await this.doctorDayOffRepository.findByDoctorIdAndDate(doctor.getId(), isDayOff);
         if (doctorDayOff) {

@@ -11,6 +11,7 @@ import { FindOneClinicUseCase } from './use-case/find-one-clinic.use-case';
 import { UpdateClinicUseCase } from './use-case/update-clinic.use-case';
 import { RemoveClinicUseCase } from './use-case/remove-clinic.use-case';
 import { FindNearbyClinicUseCase } from './use-case/find-nearby-clinic.use-case';
+import { ClinicService } from './clinic.service';
 
 @ApiTags('Clinic')
 @ApiBearerAuth('defaultBearerAuth')
@@ -24,6 +25,7 @@ export class ClinicController {
     private readonly updateClinicUseCase: UpdateClinicUseCase,
     private readonly removeClinicUseCase: RemoveClinicUseCase,
     private readonly findNearbyClinicUseCase: FindNearbyClinicUseCase,
+    private readonly clinicService: ClinicService,
   ) {}
 
   @Post()
@@ -46,7 +48,8 @@ export class ClinicController {
   @ApiResponse({ status: 200, description: 'Return nearby clinics.', type: ClinicResponseDto, isArray: true })
   async getNearbyClinics(@Body() body: GetNearbyClinicsDto) {
     const { lat, lng, radius = 5000 } = body; // Asignar valor por defecto si no se proporciona
-    return this.findNearbyClinicUseCase.execute(lat, lng, radius);
+    return this.clinicService.findNearby(lat, lng, radius);
+    //return this.findNearbyClinicUseCase.execute(lat, lng, radius);
   }
 
   @Get(':doctorId')
