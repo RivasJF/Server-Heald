@@ -1,7 +1,6 @@
 import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from 'generated/prisma/client';
-import { Pool } from 'pg';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
@@ -9,10 +8,9 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 
 
   constructor() {
-    const pool: any = new Pool({ connectionString: process.env.DATABASE_URL });
-    const adapter = new PrismaPg(pool);
+    const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
     
-    super({ adapter }); // Pasamos el adaptador directamente
+    super({ adapter });
   }
 
   async onModuleInit() {
