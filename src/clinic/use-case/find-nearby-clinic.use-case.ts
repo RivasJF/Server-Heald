@@ -42,17 +42,8 @@ export class FindNearbyClinicUseCase {
   }
 
   private getBoundingBox(lat: number, lng: number, radius: number) {
-    const latRadians = (lat * Math.PI) / 180;
-    const deltaLatitude =
-      (radius / FindNearbyClinicUseCase.EARTH_RADIUS_IN_METERS) *
-      (180 / Math.PI);
-
-    const cosLatitude = Math.cos(latRadians);
-    const safeCosLatitude = Math.abs(cosLatitude) < 1e-12 ? 1e-12 : cosLatitude;
-    const deltaLongitude =
-      (radius /
-        (FindNearbyClinicUseCase.EARTH_RADIUS_IN_METERS * safeCosLatitude)) *
-      (180 / Math.PI);
+    const deltaLatitude =(radius / 1000) / 111;
+    const deltaLongitude = (radius / 1000) / (111 * (Math.cos(Math.round(lat *100)/100)));
 
     return {
       minLatitude: lat - deltaLatitude,
