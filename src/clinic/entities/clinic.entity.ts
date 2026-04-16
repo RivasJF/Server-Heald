@@ -1,3 +1,5 @@
+import { Doctor } from "src/doctor/entities/doctor.entity";
+
 export type UpdateClinicData = {
   latitude?: number;
   longitude?: number;
@@ -12,6 +14,7 @@ export class Clinic {
   private longitude: number;
   private address: string;
   private readonly doctorId: string;
+  private readonly doctor?: Doctor;
   private readonly createdAt?: Date;
   private readonly updatedAt?: Date;
 
@@ -21,6 +24,7 @@ export class Clinic {
     address: string,
     doctorId: string,
     id?: string,
+    doctor?: Doctor,
     createdAt?: Date,
     updatedAt?: Date,
   ) {
@@ -29,6 +33,7 @@ export class Clinic {
     this.longitude = longitude;
     this.address = address;
     this.doctorId = doctorId;
+    this.doctor = doctor;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
@@ -39,6 +44,7 @@ export class Clinic {
     address: string,
     doctorId: string,
     id?: string,
+    doctor?: Doctor,
     createdAt?: Date,
     updatedAt?: Date,
   ) {
@@ -64,6 +70,7 @@ export class Clinic {
       address,
       doctorId,
       id,
+      doctor,
       createdAt,
       updatedAt,
     );
@@ -146,5 +153,9 @@ export class Clinic {
 
   getUpdatedAt() {
     return this.updatedAt;
+  }
+
+  getDoctor() {
+    return this.doctor;
   }
 }

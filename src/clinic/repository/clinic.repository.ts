@@ -119,6 +119,7 @@ export class ClinicRepository implements IClinicRepository {
       data.address,
       data.doctorId,
       data.id,
+      null,
       data.createdAt,
       data.updatedAt,
     );
