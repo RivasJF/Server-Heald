@@ -14,9 +14,9 @@ export class Clinic {
   private longitude: number;
   private address: string;
   private readonly doctorId: string;
-  private readonly doctor?: Doctor;
   private readonly createdAt?: Date;
   private readonly updatedAt?: Date;
+  private readonly doctor?: Doctor;
 
   private constructor(
     latitude: number,
@@ -24,18 +24,18 @@ export class Clinic {
     address: string,
     doctorId: string,
     id?: string,
-    doctor?: Doctor,
     createdAt?: Date,
     updatedAt?: Date,
+    doctor?: Doctor,
   ) {
     this.id = id;
     this.latitude = latitude;
     this.longitude = longitude;
     this.address = address;
     this.doctorId = doctorId;
-    this.doctor = doctor;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    this.doctor = doctor;
   }
 
   static create(
@@ -44,9 +44,9 @@ export class Clinic {
     address: string,
     doctorId: string,
     id?: string,
-    doctor?: Doctor,
     createdAt?: Date,
     updatedAt?: Date,
+    doctor?: Doctor,
   ) {
     if (!doctorId || doctorId.trim().length === 0) {
       throw new Error('Doctor id is required');
@@ -70,9 +70,9 @@ export class Clinic {
       address,
       doctorId,
       id,
-      doctor,
       createdAt,
       updatedAt,
+      doctor
     );
   }
 

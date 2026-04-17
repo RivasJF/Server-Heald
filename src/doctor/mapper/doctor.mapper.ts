@@ -1,6 +1,8 @@
 import { DoctorResponseDto } from '../dto/doctorResponse.dto';
 import { Doctor } from '../entities/doctor.entity';
 import { Doctor as DoctorSchema } from 'generated/prisma';
+import { UserMapper } from 'src/user/mapper/user.mapper';
+import { DoctorServiceStatusMapper } from 'src/doctor-status/mapper/doctor-service-status.mapper';
 
 export class DoctorMapper {
   static toDto(doctor: Doctor): DoctorResponseDto {
@@ -11,6 +13,10 @@ export class DoctorMapper {
       biography: doctor.getBiography(),
       createdAt: doctor.getCreatedAt()?.toISOString(),
       updatedAt: doctor.getUpdatedAt()?.toISOString(),
+      user: doctor.getUser() ? UserMapper.toDto(doctor.getUser()) : undefined,
+      serviceStatus: doctor.getServiceStatus()
+        ? DoctorServiceStatusMapper.toDto(doctor.getServiceStatus())
+        : undefined,
     });
   }
 

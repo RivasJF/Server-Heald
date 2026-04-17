@@ -3,6 +3,21 @@ import { ClinicLocation as ClinicLocationSchema } from 'generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Clinic } from '../entities/clinic.entity';
 import { IClinicRepository } from './clinic.repository.imp';
+import { Doctor as DoctorSchema } from 'generated/prisma';
+import { User as UserSchema } from 'generated/prisma';
+import { DoctorServiceStatus as DoctorServiceStatusSchema } from 'generated/prisma';
+import { UserMapper } from 'src/user/mapper/user.mapper';
+import { DoctorServiceStatusMapper } from 'src/doctor-status/mapper/doctor-service-status.mapper';
+import { Doctor } from 'src/doctor/entities/doctor.entity';
+
+type DoctorWithInclude = DoctorSchema & {
+  user?: UserSchema | null;
+  serviceStatus?: DoctorServiceStatusSchema | null;
+};
+
+type ClinicWithDoctorAndUser = ClinicLocationSchema & {
+  doctor?: DoctorWithInclude | null;
+};
 
 @Injectable()
 export class ClinicRepository implements IClinicRepository {
@@ -42,6 +57,21 @@ export class ClinicRepository implements IClinicRepository {
     return clinics.map((clinic) => this.toDomain(clinic));
   }
 
+  async findAllWithDoctorAndUserAndServiceStatus(): Promise<Clinic[]> {
+    const clinics = await this.prisma.clinicLocation.findMany({
+      include: {
+        doctor: {
+          include: {
+            serviceStatus: true,
+            user: true,
+          },
+        },
+      },
+    });
+
+    return clinics.map((clinic) => this.toDomain(clinic));
+  }
+
   async findByCoordinatesRange(
     minLatitude: number,
     maxLatitude: number,
@@ -57,6 +87,14 @@ export class ClinicRepository implements IClinicRepository {
         longitude: {
           gte: minLongitude,
           lte: maxLongitude,
+        },
+      },
+      include: {
+        doctor: {
+          include: {
+            serviceStatus: true,
+            user: true,
+          },
         },
       },
     });
@@ -112,16 +150,34 @@ export class ClinicRepository implements IClinicRepository {
     return this.toDomain(deleted);
   }
 
-  private toDomain(data: ClinicLocationSchema): Clinic {
+  private toDomain(data: ClinicLocationSchema | ClinicWithDoctorAndUser): Clinic {
+    const doctor =
+      'doctor' in data && data.doctor
+        ? Doctor.create(
+            data.doctor.userId,
+            data.doctor.speciality === null
+              ? undefined
+              : data.doctor.speciality,
+            data.doctor.biography === null ? undefined : data.doctor.biography,
+            data.doctor.id,
+            data.doctor.createdAt,
+            data.doctor.updatedAt,
+            data.doctor.user ? UserMapper.toDomain(data.doctor.user) : undefined,
+            data.doctor.serviceStatus
+              ? DoctorServiceStatusMapper.toDomain(data.doctor.serviceStatus)
+              : undefined,
+          )
+        : undefined;
+
     return Clinic.create(
       data.latitude,
       data.longitude,
       data.address,
       data.doctorId,
       data.id,
-      null,
       data.createdAt,
       data.updatedAt,
+      doctor,
     );
   }
 }

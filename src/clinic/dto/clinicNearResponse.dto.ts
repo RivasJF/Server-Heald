@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 import { DoctorResponseDto } from 'src/doctor/dto/doctorResponse.dto';
 
-export class ClinicResponseDto {
+export class ClinicNearResponseDto {
   @ApiProperty({
     description: "Clinic's unique identifier",
     example: 'cm8z1xk2m0000s5u8n4p7q9r1',
@@ -50,7 +50,22 @@ export class ClinicResponseDto {
   })
   updatedAt: string;
 
-  constructor(data: Partial<ClinicResponseDto>) {
+
+  @ApiPropertyOptional({
+    description: 'Associated doctor data for this clinic',
+    type: () => DoctorResponseDto,
+  })
+  doctor?: DoctorResponseDto;
+  
+  @ApiPropertyOptional({
+    description: 'Distance in meters from the search point',
+    example: 1520.5,
+  })
+  @IsOptional()
+  @IsNumber()
+  distance?: number;
+
+  constructor(data: Partial<ClinicNearResponseDto>) {
     Object.assign(this, data);
   }
 }

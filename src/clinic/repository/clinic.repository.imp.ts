@@ -3,6 +3,7 @@ import { Clinic } from '../entities/clinic.entity';
 export interface IClinicRepository {
   save(entity: Clinic): Promise<Clinic>;
   findAll(): Promise<Clinic[]>;
+  findAllWithDoctorAndUserAndServiceStatus(): Promise<Clinic[]>;
   findByCoordinatesRange(
     minLatitude: number,
     maxLatitude: number,

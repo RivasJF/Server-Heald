@@ -5,7 +5,6 @@ import { IClinicRepository } from '../repository/clinic.repository.imp';
 
 @Injectable()
 export class FindNearbyClinicUseCase {
-  private static readonly EARTH_RADIUS_IN_METERS = 6371e3;
 
   constructor(
     @Inject('IClinicRepository')
@@ -33,7 +32,7 @@ export class FindNearbyClinicUseCase {
         );
 
         return {
-          ...ClinicMapper.toDto(clinic),
+          ...ClinicMapper.toNearDto(clinic),
           distance,
         };
       })
