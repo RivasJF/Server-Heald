@@ -6,6 +6,7 @@ import { FindAppointmentsByPatientUseCase } from './use-case/find-appointments-b
 import { FindAppointmentsByDoctorUseCase } from './use-case/find-appointments-by-doctor.use-case';
 import { GenerateAvailabilityUseCase } from './use-case/generate-availability.use-case';
 import { CancelAppointmentUseCase } from './use-case/cancel-appointment.use-case';
+import { CreateAppointmentUseCase } from './use-case/create-appointment.use-case';
 import { DoctorModule } from 'src/doctor/doctor.module';
 import { ScheduleModule } from 'src/schedule/schedule.module';
 import { ClinicModule } from 'src/clinic/clinic.module';
@@ -20,6 +21,7 @@ import { DoctorStatusModule } from 'src/doctor-status/doctor-status.module';
     FindAppointmentsByDoctorUseCase,
     GenerateAvailabilityUseCase,
     CancelAppointmentUseCase,
+    CreateAppointmentUseCase,
     {
       provide: 'IAppointmentRepository',
       useClass: AppointmentRepository,

@@ -3,6 +3,22 @@ import { Appointment as AppointmentSchema } from 'generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Appointment } from '../entities/appointment.entity';
 import { IAppointmentRepository } from './appointment.repository.imp';
+import { Doctor as DoctorSchema } from 'generated/prisma';
+import { User as UserSchema } from 'generated/prisma';
+import { ClinicLocation as ClinicLocationSchema } from 'generated/prisma';
+import { Doctor } from 'src/doctor/entities/doctor.entity';
+import { Clinic } from 'src/clinic/entities/clinic.entity';
+import { UserMapper } from 'src/user/mapper/user.mapper';
+import { User } from 'src/user/entities/user.entity';
+import { Role } from 'src/user/entities/user.enum';
+
+type AppointmentWithInclude = AppointmentSchema & {
+  doctor?: DoctorSchema & {
+    user?: UserSchema | null;
+  };
+  patient?: UserSchema | null;
+  clinicLocation?: ClinicLocationSchema | null;
+};
 
 @Injectable()
 export class AppointmentRepository implements IAppointmentRepository {
@@ -68,6 +84,14 @@ export class AppointmentRepository implements IAppointmentRepository {
   async findByPatientId(patientId: string): Promise<Appointment[]> {
     const appointments = await this.prisma.appointment.findMany({
       where: { patientId },
+      include: {
+        doctor: {
+          include: {
+            user: true,
+          },
+        },
+        clinicLocation: true,
+      },
       orderBy: { startTime: 'asc' },
     });
 
@@ -77,6 +101,10 @@ export class AppointmentRepository implements IAppointmentRepository {
   async findByDoctorId(doctorId: string): Promise<Appointment[]> {
     const appointments = await this.prisma.appointment.findMany({
       where: { doctorId },
+      include: {
+        patient: true,
+        clinicLocation: true,
+      },
       orderBy: { startTime: 'asc' },
     });
 
@@ -124,7 +152,47 @@ export class AppointmentRepository implements IAppointmentRepository {
     return this.toDomain(appointment);
   }
 
-  private toDomain(data: AppointmentSchema): Appointment {
+  private toDomain(data: AppointmentSchema | AppointmentWithInclude): Appointment {
+    const doctor =
+      'doctor' in data && data.doctor
+        ? Doctor.create(
+            data.doctor.userId,
+            data.doctor.speciality ?? undefined,
+            data.doctor.biography ?? undefined,
+            data.doctor.id,
+            data.doctor.createdAt,
+            data.doctor.updatedAt,
+            data.doctor.user ? UserMapper.toDomain(data.doctor.user) : undefined,
+          )
+        : undefined;
+
+    const patient = 
+      'patient' in data && data.patient
+        ? User.create(
+            data.patient.name,
+            data.patient.email,
+            data.patient.password,
+            data.patient.role as Role,
+            data.patient.phoneNumber,
+            data.patient.birthDate,
+            data.patient.id,
+            data.patient.createdAt,
+            data.patient.updatedAt,
+          )
+        : undefined;
+    const clinicLocation =
+      'clinicLocation' in data && data.clinicLocation
+        ? Clinic.create(
+            data.clinicLocation.latitude,
+            data.clinicLocation.longitude,
+            data.clinicLocation.address,
+            data.clinicLocation.doctorId,
+            data.clinicLocation.id,
+            data.clinicLocation.createdAt,
+            data.clinicLocation.updatedAt,
+          )
+        : undefined;
+
     return Appointment.create(
       data.doctorId,
       data.patientId,
@@ -134,6 +202,9 @@ export class AppointmentRepository implements IAppointmentRepository {
       data.id,
       data.createdAt,
       data.updatedAt,
+      doctor,
+      patient,
+      clinicLocation,
     );
   }
 }

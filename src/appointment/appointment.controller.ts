@@ -17,6 +17,7 @@ import { FindAppointmentsByPatientUseCase } from './use-case/find-appointments-b
 import { FindAppointmentsByDoctorUseCase } from './use-case/find-appointments-by-doctor.use-case';
 import { GenerateAvailabilityUseCase } from './use-case/generate-availability.use-case';
 import { CancelAppointmentUseCase } from './use-case/cancel-appointment.use-case';
+import { CreateAppointmentUseCase } from './use-case/create-appointment.use-case';
 
 @ApiTags('Appointment')
 @ApiBearerAuth('defaultBearerAuth')
@@ -25,6 +26,7 @@ import { CancelAppointmentUseCase } from './use-case/cancel-appointment.use-case
 export class AppointmentController {
   constructor(
     private readonly appointmentService: AppointmentService,
+    private readonly createAppointmentUseCase: CreateAppointmentUseCase,
     private readonly findByPatientUseCase: FindAppointmentsByPatientUseCase,
     private readonly findByDoctorUseCase: FindAppointmentsByDoctorUseCase,
     private readonly generateAvailabilityUseCase: GenerateAvailabilityUseCase,
@@ -34,7 +36,8 @@ export class AppointmentController {
   @Post()
   @ApiOperation({ summary: 'Create a new appointment' })
   create(@Body() dto: CreateAppointmentDto) {
-    return this.appointmentService.create(dto);
+    return this.createAppointmentUseCase.execute(dto);
+    //return this.appointmentService.create(dto);
   }
 
   @Get('availability/:doctorId/:date')
@@ -50,18 +53,21 @@ export class AppointmentController {
   @Get('doctor/:doctorId')
   @ApiOperation({ summary: 'Find appointments by doctor' })
   findByDoctor(@Param('doctorId') doctorId: string) {
-    return this.appointmentService.findByDoctor(doctorId);
+    return this.findByDoctorUseCase.execute(doctorId);
+    //return this.appointmentService.findByDoctor(doctorId);
   }
 
   @Get('patient/:patientId')
   @ApiOperation({ summary: 'Find appointments by patient' })
   findByPatient(@Param('patientId') patientId: string) {
-    return this.appointmentService.findByPatient(patientId);
+    return this.findByPatientUseCase.execute(patientId);
+    //return this.appointmentService.findByPatient(patientId);
   }
 
   @Delete(':appointmentId')
   @ApiOperation({ summary: 'Cancel an appointment' })
   cancelAppointment(@Param('appointmentId') appointmentId: string) {
-    return this.appointmentService.cancelAppointment(appointmentId);
+    return this.cancelAppointmentUseCase.execute(appointmentId);
+    //return this.appointmentService.cancelAppointment(appointmentId);
   }
 }

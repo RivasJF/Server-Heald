@@ -15,6 +15,8 @@ export class FindAppointmentsByPatientUseCase {
       patientId,
     );
 
-    return AppointmentMapper.toDtoList(appointments);
+    return appointments.map((appointment) =>
+      AppointmentMapper.toPatientDto(appointment),
+    );
   }
 }

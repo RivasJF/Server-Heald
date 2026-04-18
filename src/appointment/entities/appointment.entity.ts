@@ -1,3 +1,7 @@
+import { Clinic } from "src/clinic/entities/clinic.entity";
+import { Doctor } from "src/doctor/entities/doctor.entity";
+import { User } from "src/user/entities/user.entity";
+
 export type UpdateAppointmentData = {
   startTime?: Date;
   endTime?: Date;
@@ -12,6 +16,9 @@ export class Appointment {
   private endTime: Date;
   private readonly createdAt?: Date;
   private readonly updatedAt?: Date;
+  private readonly doctor?: Doctor;
+  private readonly patient?: User;
+  private readonly clinicLocation?: Clinic;
 
   private constructor(
     doctorId: string,
@@ -22,6 +29,9 @@ export class Appointment {
     id?: string,
     createdAt?: Date,
     updatedAt?: Date,
+    doctor?: Doctor,
+    patient?: User,
+    clinicLocation?: Clinic,
   ) {
     this.id = id;
     this.doctorId = doctorId;
@@ -31,6 +41,9 @@ export class Appointment {
     this.endTime = endTime;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    this.doctor = doctor;
+    this.patient = patient;
+    this.clinicLocation = clinicLocation;
   }
 
   static create(
@@ -42,6 +55,9 @@ export class Appointment {
     id?: string,
     createdAt?: Date,
     updatedAt?: Date,
+    doctor?: Doctor,
+    patient?: User,
+    clinicLocation?: Clinic,
   ) {
     if (!doctorId || doctorId.trim().length === 0) {
       throw new Error('Doctor id is required');
@@ -76,6 +92,9 @@ export class Appointment {
       id,
       createdAt,
       updatedAt,
+      doctor,
+      patient,
+      clinicLocation,
     );
   }
 
@@ -139,4 +158,16 @@ export class Appointment {
   getUpdatedAt() {
     return this.updatedAt;
   }
+
+  getDoctor() {
+    return this.doctor;
+  }
+
+  getPatient() {
+    return this.patient;
+  }
+
+  getClinicLocation() {
+    return this.clinicLocation;
+  };
 }
