@@ -6,6 +6,8 @@ import { IDoctorDayCloseRepository } from "src/doctor-status/repository/doctor-d
 import { IDoctorDayOffRepository } from "src/doctor-status/repository/doctor-day-off.repository.imp";
 import { addMinutes } from "date-fns/addMinutes";
 import { IClinicRepository } from "src/clinic/repository/clinic.repository.imp";
+import { AppointmentAvailabilityDto } from '../dto/appointment-availability.dto';
+import { AppointmentAvailabilityMapper } from '../mapper/appointment-availability.mapper';
 
 @Injectable()
 export class GenerateAvailabilityUseCase {
@@ -31,13 +33,13 @@ export class GenerateAvailabilityUseCase {
 
         if (!doctor.serviceIsActive()) {
             //retornar un dto con el mensaje de que el doctor no está activo
-            return {
+                        return AppointmentAvailabilityMapper.toDto({
         date,
         totalSlots: 0,
         availableSlots: 0,
         available: [],
         message: 'El doctor tiene su servicio desactivado',
-      };
+            });
         }
 
         const selectedDate = new Date(`${date}T00:00:00`);
@@ -59,13 +61,13 @@ export class GenerateAvailabilityUseCase {
         const doctorDayOff = await this.doctorDayOffRepository.findByDoctorIdAndDate(doctor.getId(), isDayOff);
         if (doctorDayOff) {
             //retornar un dto con el mensaje de que el doctor tiene día libre
-            return {
+                        return AppointmentAvailabilityMapper.toDto({
         date,
         totalSlots: 0,
         availableSlots: 0,
         available: [],
         message: 'El doctor no atenderá este día',
-      };
+            });
         }
 
         const WEEK_MAP = {
@@ -83,13 +85,13 @@ export class GenerateAvailabilityUseCase {
         if (!dayConfig) {
             //retornar un dto con el mensaje de que el doctor no trabaja ese día
             //talvez adaptar dto
-            return {
+                        return AppointmentAvailabilityMapper.toDto({
         date,
         available: [],
         totalSlots: 0,
         availableSlots: 0,
         message: 'El doctor no trabaja este día',
-      };
+            });
         }
 
         const dailyClosure = await this.doctorDayCloseRepository.findByDoctorIdAndDate(doctor.getId(), isDayOff);
@@ -163,13 +165,13 @@ export class GenerateAvailabilityUseCase {
             );
         }
 
-        return {
+        return AppointmentAvailabilityMapper.toDto({
             date,
             totalSlots: slots.length,
             availableSlots: formattedAvailable.length,
             clinicLocationId: clinicLocation.getId(),
             available: formattedAvailable,
-        };
+        });
 
     }
 }
