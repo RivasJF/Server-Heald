@@ -13,6 +13,7 @@ import { DeleteUserUseCase } from './use-cases/delete-user.use-case';
 @ApiTags('Users')
 @Controller('user')
 export class UserController {
+  getAllUsersPaginationUseCase: any;
   constructor(
     private readonly getAllUsersUseCase: GetAllUsersUseCase,
     private readonly getUserByIdUseCase: GetUserByIdUseCase,
@@ -38,9 +39,20 @@ export class UserController {
     description: 'List of users',
     type: [UserResponseDto],
   })
+  @Get()
+  findAll(){
+    return this.getAllUsersUseCase.execute();
+  }
+
+  @ApiOperation({ summary: 'Get all users pagination' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of users',
+    type: [UserResponseDto],
+  })
   @Get(':page/:pageSize')
-  findAll(@Param('page') page:number, @Param('pageSize') pageSize:number) {
-    return this.getAllUsersUseCase.execute(page, pageSize);
+  findAllPagination(@Param('page') page:number, @Param('pageSize') pageSize:number) {
+    return this.getAllUsersPaginationUseCase.execute(page, pageSize);
   }
 
   @ApiOperation({ summary: 'Get a user' })

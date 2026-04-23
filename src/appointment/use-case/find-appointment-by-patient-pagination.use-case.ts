@@ -4,15 +4,17 @@ import { AppointmentMapper } from '../mapper/appointment.mapper';
 import { IAppointmentRepository } from '../repository/appointment.repository.imp';
 
 @Injectable()
-export class FindAppointmentsByPatientUseCase {
+export class FindAppointmentsByPatientPaginationUseCase {
   constructor(
     @Inject('IAppointmentRepository')
     private readonly appointmentRepository: IAppointmentRepository,
   ) {}
 
-  async execute(patientId: string): Promise<AppointmentResponseDto[]> {
-    const appointments = await this.appointmentRepository.findByPatientId(
-      patientId
+  async execute(patientId: string,page: number, pageSize: number): Promise<AppointmentResponseDto[]> {
+    const appointments = await this.appointmentRepository.findByPatientIdPagination(
+      patientId,
+      page,
+      pageSize
     );
 
     return appointments.map((appointment) =>

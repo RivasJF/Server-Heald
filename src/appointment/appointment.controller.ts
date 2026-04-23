@@ -30,6 +30,7 @@ import { AppointmentAvailabilityDto } from './dto/appointment-availability.dto';
 @UseGuards(AuthGuard('jwt'))
 @Controller('appointment')
 export class AppointmentController {
+  [x: string]: any;
   constructor(
     private readonly appointmentService: AppointmentService,
     private readonly createAppointmentUseCase: CreateAppointmentUseCase,
@@ -64,10 +65,16 @@ export class AppointmentController {
     //return this.appointmentService.findByDoctor(doctorId);
   }
 
+  @Get('patient/:patientId')
+  @ApiOperation({ summary: 'Find appointments by patient' })
+  findByPatient(@Param('patientId') patientId: string) {
+    return this.findByPatientUseCase.execute(patientId);
+    //return this.appointmentService.findByPatient(patientId);
+  }
   @Get('patient/:patientId/:page/:pageSize')
   @ApiOperation({ summary: 'Find appointments by patient' })
-  findByPatient(@Param('patientId') patientId: string,@Param('page') page:number, @Param('pageSize') pageSize:number) {
-    return this.findByPatientUseCase.execute(patientId, page, pageSize );
+  findByPatientPagination(@Param('patientId') patientId: string,@Param('page') page:number, @Param('pageSize') pageSize:number) {
+    return this.findByPatientPaginationUseCase.execute(patientId, page, pageSize );
     //return this.appointmentService.findByPatient(patientId);
   }
 

@@ -11,6 +11,7 @@ import { DoctorModule } from 'src/doctor/doctor.module';
 import { ScheduleModule } from 'src/schedule/schedule.module';
 import { ClinicModule } from 'src/clinic/clinic.module';
 import { DoctorStatusModule } from 'src/doctor-status/doctor-status.module';
+import { FindAppointmentsByPatientPaginationUseCase } from './use-case/find-appointment-by-patient-pagination.use-case';
 
 @Module({
   imports: [DoctorModule, ScheduleModule, ClinicModule, DoctorStatusModule],
@@ -18,6 +19,7 @@ import { DoctorStatusModule } from 'src/doctor-status/doctor-status.module';
   providers: [
     AppointmentService,
     FindAppointmentsByPatientUseCase,
+    FindAppointmentsByPatientPaginationUseCase,
     FindAppointmentsByDoctorUseCase,
     GenerateAvailabilityUseCase,
     CancelAppointmentUseCase,

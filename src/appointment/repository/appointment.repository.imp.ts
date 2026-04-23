@@ -4,7 +4,8 @@ export interface IAppointmentRepository {
   save(entity: Appointment): Promise<Appointment>;
   findById(id: string): Promise<Appointment | null>;
   delete(id: string): Promise<Appointment | null>;
-  findByPatientId(patientId: string,page:number, pageSize:number): Promise<Appointment[]>;
+  findByPatientId(patientId: string): Promise<Appointment[]>;
+  findByPatientIdPagination(patientId: string,page:number, pageSize:number): Promise<Appointment[]>;
   findByDoctorId(doctorId: string): Promise<Appointment[]>;
   findByDoctorIdInRange(
     doctorId: string,

@@ -4,6 +4,7 @@ export interface IUserRepository {
   save(entity: User): Promise<User>;
   findById(id: string): Promise<User | null>;
   findByEmail(email: string): Promise<User | null>;
-  fiendAll(page: number, pageSize: number): Promise<User[]>;
+  fiendAllPagination(page: number, pageSize: number): Promise<User[]>;
+  fiendAll(): Promise<User[]>;
   delete(id: string): Promise<User | null>;
 }

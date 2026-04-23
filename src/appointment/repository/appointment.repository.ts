@@ -81,7 +81,24 @@ export class AppointmentRepository implements IAppointmentRepository {
     return this.toDomain(deleted);
   }
 
-  async findByPatientId(patientId: string,page: number, pageSize:number): Promise<Appointment[]> {
+  async findByPatientId(patientId: string): Promise<Appointment[]> {
+    const appointments = await this.prisma.appointment.findMany({
+      where: { patientId },
+      include: {
+        doctor: {
+          include: {
+            user: true,
+          },
+        },
+        clinicLocation: true,
+      },
+      orderBy: { startTime: 'asc' },
+    });
+
+    return appointments.map((appointment) => this.toDomain(appointment));
+  }
+
+  async findByPatientIdPagination(patientId: string,page: number, pageSize:number): Promise<Appointment[]> {
     const appointments = await this.prisma.appointment.findMany({
       where: { patientId },
       include: {
