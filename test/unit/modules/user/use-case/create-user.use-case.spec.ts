@@ -23,6 +23,7 @@ describe('CreateUserUseCase', () => {
       save: jest.fn(),
       findById: jest.fn(),
       findByEmail: jest.fn(),
+      fiendAllPagination: jest.fn(),
       fiendAll: jest.fn(),
       delete: jest.fn(),
     };
