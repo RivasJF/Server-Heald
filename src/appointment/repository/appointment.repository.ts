@@ -81,7 +81,7 @@ export class AppointmentRepository implements IAppointmentRepository {
     return this.toDomain(deleted);
   }
 
-  async findByPatientId(patientId: string): Promise<Appointment[]> {
+  async findByPatientId(patientId: string,page: number, pageSize:number): Promise<Appointment[]> {
     const appointments = await this.prisma.appointment.findMany({
       where: { patientId },
       include: {
@@ -92,6 +92,8 @@ export class AppointmentRepository implements IAppointmentRepository {
         },
         clinicLocation: true,
       },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
       orderBy: { startTime: 'asc' },
     });
 

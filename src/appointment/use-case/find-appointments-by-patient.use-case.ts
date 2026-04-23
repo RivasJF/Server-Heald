@@ -10,9 +10,11 @@ export class FindAppointmentsByPatientUseCase {
     private readonly appointmentRepository: IAppointmentRepository,
   ) {}
 
-  async execute(patientId: string): Promise<AppointmentResponseDto[]> {
+  async execute(patientId: string,page: number, pageSize: number): Promise<AppointmentResponseDto[]> {
     const appointments = await this.appointmentRepository.findByPatientId(
       patientId,
+      page,
+      pageSize
     );
 
     return appointments.map((appointment) =>

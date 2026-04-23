@@ -64,10 +64,10 @@ export class AppointmentController {
     //return this.appointmentService.findByDoctor(doctorId);
   }
 
-  @Get('patient/:patientId')
+  @Get('patient/:patientId/:page/:pageSize')
   @ApiOperation({ summary: 'Find appointments by patient' })
-  findByPatient(@Param('patientId') patientId: string) {
-    return this.findByPatientUseCase.execute(patientId);
+  findByPatient(@Param('patientId') patientId: string,@Param('page') page:number, @Param('pageSize') pageSize:number) {
+    return this.findByPatientUseCase.execute(patientId, page, pageSize );
     //return this.appointmentService.findByPatient(patientId);
   }
 
