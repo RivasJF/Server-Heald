@@ -17,8 +17,14 @@ export class UserRepository implements IUserRepository {
     return this.toDomain(user);
   }
 
-  async fiendAll(): Promise<User[]> {
-    const users = await this.prisma.user.findMany();
+  async fiendAll(page: number, pageSize: number): Promise<User[]> {
+    const users = await this.prisma.user.findMany({
+     skip: (page - 1) * pageSize,
+     take: pageSize,
+     orderBy: {
+       createdAt: 'desc',
+     },
+    });
     return users.map((user) => this.toDomain(user));
   }
 

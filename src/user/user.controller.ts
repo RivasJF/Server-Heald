@@ -38,9 +38,9 @@ export class UserController {
     description: 'List of users',
     type: [UserResponseDto],
   })
-  @Get()
-  findAll() {
-    return this.getAllUsersUseCase.execute();
+  @Get(':page/:pageSize')
+  findAll(@Param('page') page:number, @Param('pageSize') pageSize:number) {
+    return this.getAllUsersUseCase.execute(page, pageSize);
   }
 
   @ApiOperation({ summary: 'Get a user' })

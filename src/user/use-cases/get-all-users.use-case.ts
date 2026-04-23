@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { UserMapper } from '../mapper/user.mapper';
 import { IUserRepository } from '../repositories/user.repository.imp';
 
@@ -9,8 +9,16 @@ export class GetAllUsersUseCase {
     private readonly userRepository: IUserRepository,
   ) {}
 
-  async execute() {
-    const doctors = await this.userRepository.fiendAll();
-    return doctors.map((doctor) => UserMapper.toDto(doctor));
+  async execute(number: number, pageSize: number) {
+    const page = Number(number);
+
+    if (!Number.isFinite(page) || page <= 0 && !Number.isFinite(pageSize) || pageSize <= 0) {
+      throw new BadRequestException(
+        'El parámetro page y pageSize deben ser números mayores a 0',
+      );
+    }
+
+    const users = await this.userRepository.fiendAll(page, pageSize);
+    return users.map((user) => UserMapper.toDto(user));
   }
 }
