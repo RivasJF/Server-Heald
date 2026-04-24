@@ -130,6 +130,21 @@ export class AppointmentRepository implements IAppointmentRepository {
     return appointments.map((appointment) => this.toDomain(appointment));
   }
 
+  async findByDoctorIdPagination(doctorId: string, page: number, pageSize: number): Promise<Appointment[]> {
+    const appointments = await this.prisma.appointment.findMany({
+      where: { doctorId },
+      include: {
+        patient: true,
+        clinicLocation: true,
+      },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      orderBy: { startTime: 'asc' },
+    });
+
+    return appointments.map((appointment) => this.toDomain(appointment));
+  }
+
   async findByDoctorIdInRange(
     doctorId: string,
     start: Date,

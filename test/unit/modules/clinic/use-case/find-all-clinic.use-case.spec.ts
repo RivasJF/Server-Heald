@@ -12,6 +12,7 @@ describe('FindAllClinicUseCase', () => {
       findAll: jest.fn(),
       findAllWithDoctorAndUserAndServiceStatus: jest.fn(),
       findByCoordinatesRange: jest.fn(),
+      findByCoordinatesRangePagination: jest.fn(),
       findById: jest.fn(),
       findByDoctorId: jest.fn(),
       update: jest.fn(),

@@ -9,6 +9,7 @@ import { UpdateClinicUseCase } from './use-case/update-clinic.use-case';
 import { RemoveClinicUseCase } from './use-case/remove-clinic.use-case';
 import { FindNearbyClinicUseCase } from './use-case/find-nearby-clinic.use-case';
 import { DoctorModule } from 'src/doctor/doctor.module';
+import { FindNearbyClinicPaginationUseCase } from './use-case/find-nearby-clinic-pagination.use-case';
 
 @Module({
   imports: [DoctorModule],
@@ -21,6 +22,7 @@ import { DoctorModule } from 'src/doctor/doctor.module';
     UpdateClinicUseCase,
     RemoveClinicUseCase,
     FindNearbyClinicUseCase,
+    FindNearbyClinicPaginationUseCase,
     {
       provide: 'IClinicRepository',
       useClass: ClinicRepository,

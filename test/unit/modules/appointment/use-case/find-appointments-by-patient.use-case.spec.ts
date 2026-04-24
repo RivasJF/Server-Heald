@@ -16,6 +16,7 @@ describe('FindAppointmentsByPatientUseCase', () => {
       findByDoctorId: jest.fn(),
       findByDoctorIdInRange: jest.fn(),
       findOverlapping: jest.fn(),
+      findByDoctorIdPagination: jest.fn(),
     };
 
     useCase = new FindAppointmentsByPatientUseCase(appointmentRepository);

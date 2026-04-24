@@ -13,6 +13,7 @@ import { RemoveClinicUseCase } from './use-case/remove-clinic.use-case';
 import { FindNearbyClinicUseCase } from './use-case/find-nearby-clinic.use-case';
 import { ClinicService } from './clinic.service';
 import { ClinicNearResponseDto } from './dto/clinicNearResponse.dto';
+import { FindNearbyClinicPaginationUseCase } from './use-case/find-nearby-clinic-pagination.use-case';
 
 @ApiTags('Clinic')
 @ApiBearerAuth('defaultBearerAuth')
@@ -26,6 +27,7 @@ export class ClinicController {
     private readonly updateClinicUseCase: UpdateClinicUseCase,
     private readonly removeClinicUseCase: RemoveClinicUseCase,
     private readonly findNearbyClinicUseCase: FindNearbyClinicUseCase,
+    private readonly findNearbyClinicPaginationUseCase: FindNearbyClinicPaginationUseCase,
     private readonly clinicService: ClinicService,
   ) {}
 
@@ -49,8 +51,19 @@ export class ClinicController {
   @ApiResponse({ status: 200, description: 'Return nearby clinics.', type: ClinicNearResponseDto, isArray: true })
   async getNearbyClinics(@Body() body: GetNearbyClinicsDto) {
     const { lat, lng, radius = 5000 } = body; // Asignar valor por defecto si no se proporciona
-    return this.clinicService.findNearby(lat, lng, radius);
-    //return this.findNearbyClinicUseCase.execute(lat, lng, radius);
+    //return this.clinicService.findNearby(lat, lng, radius);
+    return this.findNearbyClinicUseCase.execute(lat, lng, radius);
+  }
+
+
+  //Consultar funcionamiento
+  @Post('near/:page/:pageSize') // Cambiado a POST para recibir datos en el body
+  @ApiOperation({ summary: 'Get nearby clinics' })
+  @ApiResponse({ status: 200, description: 'Return nearby clinics.', type: ClinicNearResponseDto, isArray: true })
+  getNearbyClinicsPagination(@Body() body: GetNearbyClinicsDto,@Param('page') page:number, @Param('pageSize') pageSize:number) {
+    const { lat, lng, radius = 5000 } = body; // Asignar valor por defecto si no se proporciona
+    //return this.clinicService.findNearby(lat, lng, radius);
+    return this.findNearbyClinicPaginationUseCase.execute(lat, lng, radius, page, pageSize);
   }
 
   @Get(':doctorId')

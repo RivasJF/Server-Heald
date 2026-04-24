@@ -102,6 +102,43 @@ export class ClinicRepository implements IClinicRepository {
     return clinics.map((clinic) => this.toDomain(clinic));
   }
 
+  async findByCoordinatesRangePagination(
+    minLatitude: number,
+    maxLatitude: number,
+    minLongitude: number,
+    maxLongitude: number,
+    page: number,
+    pageSize: number
+  ): Promise<Clinic[]> {
+    const clinics = await this.prisma.clinicLocation.findMany({
+      where: {
+        latitude: {
+          gte: minLatitude,
+          lte: maxLatitude,
+        },
+        longitude: {
+          gte: minLongitude,
+          lte: maxLongitude,
+        },
+      },
+      include: {
+        doctor: {
+          include: {
+            serviceStatus: true,
+            user: true,
+          },
+        },
+      },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      orderBy: {
+       createdAt: 'desc',
+     },
+    });
+
+    return clinics.map((clinic) => this.toDomain(clinic));
+  }
+
   async findById(id: string): Promise<Clinic | null> {
     const clinic = await this.prisma.clinicLocation.findUnique({
       where: { id },

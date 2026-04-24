@@ -24,19 +24,22 @@ import { GenerateAvailabilityUseCase } from './use-case/generate-availability.us
 import { CancelAppointmentUseCase } from './use-case/cancel-appointment.use-case';
 import { CreateAppointmentUseCase } from './use-case/create-appointment.use-case';
 import { AppointmentAvailabilityDto } from './dto/appointment-availability.dto';
+import { FindAppointmentsByPatientPaginationUseCase } from './use-case/find-appointment-by-patient-pagination.use-case';
+import { FindAppointmentsByDoctorPaginationUseCase } from './use-case/find-appointments-by-doctor-pagination.use-case';
 
 @ApiTags('Appointment')
 @ApiBearerAuth('defaultBearerAuth')
 @UseGuards(AuthGuard('jwt'))
 @Controller('appointment')
 export class AppointmentController {
-  [x: string]: any;
   constructor(
     private readonly appointmentService: AppointmentService,
     private readonly createAppointmentUseCase: CreateAppointmentUseCase,
     private readonly findByPatientUseCase: FindAppointmentsByPatientUseCase,
     private readonly findByDoctorUseCase: FindAppointmentsByDoctorUseCase,
     private readonly generateAvailabilityUseCase: GenerateAvailabilityUseCase,
+    private readonly findByPatientPaginationUseCase: FindAppointmentsByPatientPaginationUseCase,
+    private readonly findByDoctorPaginationUseCase: FindAppointmentsByDoctorPaginationUseCase,
     private readonly cancelAppointmentUseCase: CancelAppointmentUseCase,
   ) {}
 
@@ -62,6 +65,13 @@ export class AppointmentController {
   @ApiOperation({ summary: 'Find appointments by doctor' })
   findByDoctor(@Param('doctorId') doctorId: string) {
     return this.findByDoctorUseCase.execute(doctorId);
+    //return this.appointmentService.findByDoctor(doctorId);
+  }
+
+  @Get('doctor/:doctorId')
+  @ApiOperation({ summary: 'Find appointments by doctor' })
+  findByDoctorPagination(@Param('doctorId') doctorId: string,@Param('page') page:number, @Param('pageSize') pageSize:number) {
+    return this.findByDoctorPaginationUseCase.execute(doctorId, page, pageSize);
     //return this.appointmentService.findByDoctor(doctorId);
   }
 

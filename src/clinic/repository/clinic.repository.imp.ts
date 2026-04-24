@@ -10,6 +10,14 @@ export interface IClinicRepository {
     minLongitude: number,
     maxLongitude: number,
   ): Promise<Clinic[]>;
+  findByCoordinatesRangePagination(
+    minLatitude: number,
+    maxLatitude: number,
+    minLongitude: number,
+    maxLongitude: number,
+    page: number, 
+    pageSize: number
+  ): Promise<Clinic[]>;
   findById(id: string): Promise<Clinic | null>;
   findByDoctorId(doctorId: string): Promise<Clinic | null>;
   update(entity: Clinic): Promise<Clinic>;

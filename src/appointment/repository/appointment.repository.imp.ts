@@ -7,6 +7,7 @@ export interface IAppointmentRepository {
   findByPatientId(patientId: string): Promise<Appointment[]>;
   findByPatientIdPagination(patientId: string,page:number, pageSize:number): Promise<Appointment[]>;
   findByDoctorId(doctorId: string): Promise<Appointment[]>;
+  findByDoctorIdPagination(doctorId: string, page: number, pageSize: number): Promise<Appointment[]>;
   findByDoctorIdInRange(
     doctorId: string,
     start: Date,

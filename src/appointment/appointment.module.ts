@@ -12,6 +12,7 @@ import { ScheduleModule } from 'src/schedule/schedule.module';
 import { ClinicModule } from 'src/clinic/clinic.module';
 import { DoctorStatusModule } from 'src/doctor-status/doctor-status.module';
 import { FindAppointmentsByPatientPaginationUseCase } from './use-case/find-appointment-by-patient-pagination.use-case';
+import { FindAppointmentsByDoctorPaginationUseCase } from './use-case/find-appointments-by-doctor-pagination.use-case';
 
 @Module({
   imports: [DoctorModule, ScheduleModule, ClinicModule, DoctorStatusModule],
@@ -24,6 +25,7 @@ import { FindAppointmentsByPatientPaginationUseCase } from './use-case/find-appo
     GenerateAvailabilityUseCase,
     CancelAppointmentUseCase,
     CreateAppointmentUseCase,
+    FindAppointmentsByDoctorPaginationUseCase,
     {
       provide: 'IAppointmentRepository',
       useClass: AppointmentRepository,
