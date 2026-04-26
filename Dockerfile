@@ -24,4 +24,4 @@ COPY --from=builder /app/generated ./generated
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start:prod:migrate"]
+CMD ["npm", "run", "start:prod"]
