@@ -11,7 +11,6 @@ import { FindOneClinicUseCase } from './use-case/find-one-clinic.use-case';
 import { UpdateClinicUseCase } from './use-case/update-clinic.use-case';
 import { RemoveClinicUseCase } from './use-case/remove-clinic.use-case';
 import { FindNearbyClinicUseCase } from './use-case/find-nearby-clinic.use-case';
-import { ClinicService } from './clinic.service';
 import { ClinicNearResponseDto } from './dto/clinicNearResponse.dto';
 import { FindNearbyClinicPaginationUseCase } from './use-case/find-nearby-clinic-pagination.use-case';
 
@@ -28,7 +27,6 @@ export class ClinicController {
     private readonly removeClinicUseCase: RemoveClinicUseCase,
     private readonly findNearbyClinicUseCase: FindNearbyClinicUseCase,
     private readonly findNearbyClinicPaginationUseCase: FindNearbyClinicPaginationUseCase,
-    private readonly clinicService: ClinicService,
   ) {}
 
   @Post()
