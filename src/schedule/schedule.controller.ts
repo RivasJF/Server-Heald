@@ -7,7 +7,6 @@ import {
   Patch,
   UseGuards,
 } from '@nestjs/common';
-import { ScheduleService } from './schedule.service';
 import { CreateDoctorScheduleDto } from './dto/create-scheduleRequest.dto';
 import { UpdateDoctorScheduleDto } from './dto/update-scheduleRequest.dto';
 import {
@@ -33,7 +32,6 @@ export class ScheduleController {
     private readonly getScheduleByUserIdUseCase: GetScheduleByUserIdUseCase,
     private readonly createScheduleUseCase: CreateScheduleUseCase,
     private readonly updateScheduleUseCase: UpdateScheduleUseCase,
-    private readonly scheduleService: ScheduleService,
   ) {}
 
   @Post(':id')
