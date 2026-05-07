@@ -4,12 +4,9 @@ import {
   Post,
   Body,
   Param,
-  Query,
   UseGuards,
-  Patch,
   Delete,
 } from '@nestjs/common';
-import { AppointmentService } from './appointment.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import {
   ApiBearerAuth,
@@ -33,7 +30,6 @@ import { FindAppointmentsByDoctorPaginationUseCase } from './use-case/find-appoi
 @Controller('appointment')
 export class AppointmentController {
   constructor(
-    private readonly appointmentService: AppointmentService,
     private readonly createAppointmentUseCase: CreateAppointmentUseCase,
     private readonly findByPatientUseCase: FindAppointmentsByPatientUseCase,
     private readonly findByDoctorUseCase: FindAppointmentsByDoctorUseCase,
@@ -57,8 +53,8 @@ export class AppointmentController {
     @Param('doctorId') doctorId: string,
     @Param('date') date: string,
   ) {
-    //return this.generateAvailabilityUseCase.execute(doctorId, date);
-    return this.appointmentService.getAvailabilityForDay(doctorId, date);
+    return this.generateAvailabilityUseCase.execute(doctorId, date);
+    //return this.appointmentService.getAvailabilityForDay(doctorId, date);
   }
 
   @Get('doctor/:doctorId')
