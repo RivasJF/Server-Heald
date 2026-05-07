@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { DoctorService } from './doctor.service';
 import { DoctorController } from './doctor.controller';
 import { CreateDoctorUseCase } from './use-cases/create-doctor.use-case';
 import { DoctorRepository } from './repositories/doctor.repository';
@@ -18,7 +17,6 @@ import { DoctorStatusModule } from 'src/doctor-status/doctor-status.module';
     ],
   controllers: [DoctorController],
   providers: [
-    DoctorService, 
     CreateDoctorUseCase,
     GetAllDoctorUseCase,
     GetDoctorByIdUseCase,

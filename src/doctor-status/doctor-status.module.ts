@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { DoctorStatusService } from './doctor-status.service';
 import { DoctorStatusController } from './doctor-status.controller';
 import { DoctorDayOffRepository } from './repository/doctor-day-off.repository';
 import { DoctorDayCloseRepository } from './repository/doctor-day-close.repository';
@@ -14,7 +13,6 @@ import { SetServiceStatusUseCase } from './use-cases/set-service-status.use-case
 @Module({
   controllers: [DoctorStatusController],
   providers: [
-    DoctorStatusService,
     CreateDayOffUseCase,
     CreateDayCloseUseCase,
     GetAllDayOffsUseCase,

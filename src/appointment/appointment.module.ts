@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppointmentService } from './appointment.service';
 import { AppointmentController } from './appointment.controller';
 import { AppointmentRepository } from './repository/appointment.repository';
 import { FindAppointmentsByPatientUseCase } from './use-case/find-appointments-by-patient.use-case';
@@ -18,7 +17,6 @@ import { FindAppointmentsByDoctorPaginationUseCase } from './use-case/find-appoi
   imports: [DoctorModule, ScheduleModule, ClinicModule, DoctorStatusModule],
   controllers: [AppointmentController],
   providers: [
-    AppointmentService,
     FindAppointmentsByPatientUseCase,
     FindAppointmentsByPatientPaginationUseCase,
     FindAppointmentsByDoctorUseCase,

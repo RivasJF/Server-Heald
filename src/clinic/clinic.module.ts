@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { ClinicService } from './clinic.service';
 import { ClinicController } from './clinic.controller';
 import { ClinicRepository } from './repository/clinic.repository';
 import { FindAllClinicUseCase } from './use-case/find-all-clinic.use-case';
@@ -15,7 +14,6 @@ import { FindNearbyClinicPaginationUseCase } from './use-case/find-nearby-clinic
   imports: [DoctorModule],
   controllers: [ClinicController],
   providers: [
-    ClinicService,
     FindAllClinicUseCase,
     CreateClinicUseCase,
     FindOneClinicUseCase,
