@@ -14,17 +14,17 @@ services:
     # networks:
     #   - heald_net_network
 
-#   db:
-#     image: postgres:15-alpine
-#     container_name: postgres_db_dev
-#     ports:
-#       - "5432:5432"
-#     environment:
-#       POSTGRES_USER: ${DB_USER}
-#       POSTGRES_PASSWORD: ${DB_PASSWORD}
-#       POSTGRES_DB: ${DB_NAME}
-#     volumes:
-#       - postgres_healdserver_dev:/var/lib/postgresql/data
+  db:
+    image: postgres:15-alpine
+    container_name: postgres_db_dev
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_healdserver_dev:/var/lib/postgresql/data
 
-# volumes:
-#   postgres_healdserver_dev:
+volumes:
+  postgres_healdserver_dev:
