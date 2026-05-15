@@ -70,4 +70,8 @@ export class UserCreateDto {
   @IsEnum(Role, { message: 'Rol no válido' })
   @IsNotEmpty()
   role: Role;
+
+  @IsString()
+  @IsNotEmpty()
+  code: string;
 }

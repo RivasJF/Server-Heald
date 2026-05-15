@@ -8,6 +8,7 @@ import { ScheduleModule } from './schedule/schedule.module';
 import { ClinicModule } from './clinic/clinic.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { DoctorStatusModule } from './doctor-status/doctor-status.module';
+import { EmailSenderModule } from './email-sender/email-sender.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { DoctorStatusModule } from './doctor-status/doctor-status.module';
     ClinicModule,
     AppointmentModule,
     DoctorStatusModule,
+    EmailSenderModule,
   ],
 })
 export class AppModule {}

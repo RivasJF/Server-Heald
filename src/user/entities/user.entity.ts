@@ -89,6 +89,14 @@ export class User {
     }
   }
 
+  public static validateEmail(email: string) {
+    const emailRegex =
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      throw new Error('Formato de correo electrónico inválido');
+    }
+  }
+
   getId() {
     return this.id;
   }

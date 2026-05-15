@@ -6,7 +6,7 @@
 
 generator client {
   provider      = "prisma-client-js"
- binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
   output        = "../generated/prisma"
 }
 
@@ -34,19 +34,19 @@ model User {
 }
 
 model Doctor {
-  id                  String               @id @default(cuid())
-  userId              String               @unique
-  user                User                 @relation(fields: [userId], references: [id])
-  speciality          String?
-  biography           String?
-  schedule            DoctorSchedule?
-  clinicLocation      ClinicLocation?
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @updatedAt
-  appointments        Appointment[]
-  dayOffs             DoctorDayOff[]
-  dayCloses           DoctorDayClose[]
-  serviceStatus       DoctorServiceStatus?
+  id             String               @id @default(cuid())
+  userId         String               @unique
+  user           User                 @relation(fields: [userId], references: [id])
+  speciality     String?
+  biography      String?
+  schedule       DoctorSchedule?
+  clinicLocation ClinicLocation?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  appointments   Appointment[]
+  dayOffs        DoctorDayOff[]
+  dayCloses      DoctorDayClose[]
+  serviceStatus  DoctorServiceStatus?
 }
 
 enum Day {
@@ -101,23 +101,23 @@ model ClinicLocation {
 }
 
 model Appointment {
-  id               String            @id @default(cuid())
+  id               String         @id @default(cuid())
   doctorId         String
   patientId        String
   clinicLocationId String
   startTime        DateTime
   endTime          DateTime
-  doctor           Doctor            @relation(fields: [doctorId], references: [id])
-  patient          User              @relation(fields: [patientId], references: [id])
-  clinicLocation   ClinicLocation    @relation(fields: [clinicLocationId], references: [id])
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
+  doctor           Doctor         @relation(fields: [doctorId], references: [id])
+  patient          User           @relation(fields: [patientId], references: [id])
+  clinicLocation   ClinicLocation @relation(fields: [clinicLocationId], references: [id])
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
 }
 
 model DoctorDayOff {
   id        String   @id @default(cuid())
   doctorId  String
-  date      DateTime 
+  date      DateTime
   doctor    Doctor   @relation(fields: [doctorId], references: [id])
   createdAt DateTime @default(now())
 }
@@ -125,7 +125,7 @@ model DoctorDayOff {
 model DoctorDayClose {
   id        String   @id @default(cuid())
   doctorId  String
-  date      DateTime 
+  date      DateTime
   closedAt  String // hora en que dejó de trabajar
   doctor    Doctor   @relation(fields: [doctorId], references: [id])
   createdAt DateTime @default(now())
@@ -137,4 +137,16 @@ model DoctorServiceStatus {
   active    Boolean  @default(true) // true = recibe citas, false = cerrado indefinidamente
   updatedAt DateTime @updatedAt
   doctor    Doctor   @relation(fields: [doctorId], references: [id])
+}
+
+model Verification {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  code           String
+  expireAt       DateTime
+  attempts       Int      @default(0)
+  resendAttempts Int      @default(0)
+  lastResendAt   DateTime @default(now())
+  isVerified     Boolean  @default(false)
+  createdAt      DateTime @default(now())
 }
