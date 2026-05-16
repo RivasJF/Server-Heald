@@ -2,12 +2,15 @@ import { BadRequestException } from '@nestjs/common';
 import { UserCreateDto } from '../../../../../src/user/dto/userCreateRequest.dto';
 import { Role } from '../../../../../src/user/entities/user.enum';
 import { User } from '../../../../../src/user/entities/user.entity';
+import { Verification } from '../../../../../src/user/entities/verification.entity';
 import { IUserRepository } from '../../../../../src/user/repositories/user.repository.imp';
+import { IVerificationRepository } from '../../../../../src/user/repositories/verification.repository.imp';
 import { CreateUserUseCase } from '../../../../../src/user/use-cases/create-user.use-case';
 
 describe('CreateUserUseCase', () => {
   let useCase: CreateUserUseCase;
   let userRepository: jest.Mocked<IUserRepository>;
+  let verificationRepository: jest.Mocked<IVerificationRepository>;
 
   const createDto: UserCreateDto = {
     name: 'Jonatan Rivas',
@@ -16,6 +19,7 @@ describe('CreateUserUseCase', () => {
     role: Role.CLIENT,
     phoneNumber: '+573001112233',
     birthDate: new Date('2000-01-01T00:00:00.000Z'),
+    code: '123456',
   };
 
   beforeEach(() => {
@@ -28,11 +32,32 @@ describe('CreateUserUseCase', () => {
       delete: jest.fn(),
     };
 
-    useCase = new CreateUserUseCase(userRepository);
+    verificationRepository = {
+      save: jest.fn(),
+      findByEmail: jest.fn(),
+      findById: jest.fn(),
+      findByUserId: jest.fn(),
+      delete: jest.fn(),
+    };
+
+    useCase = new CreateUserUseCase(userRepository, verificationRepository);
   });
 
-  it('crea un usuario cuando el correo no existe', async () => {
-    const now = new Date('2026-04-15T10:00:00.000Z');
+  
+  it('crea un usuario cuando el código de verificación es válido', async () => {
+    const now = new Date();
+    
+    const verification = Verification.create(
+      createDto.email,
+      createDto.code,
+      'verification-id-1',
+      0,
+      0,
+      false,
+      new Date(now.getTime() + 5 * 60 * 1000),
+      now,
+    );
+
     const savedUser = User.create(
       createDto.name,
       createDto.email,
@@ -45,12 +70,12 @@ describe('CreateUserUseCase', () => {
       now,
     );
 
-    userRepository.findByEmail.mockResolvedValue(null);
+    verificationRepository.findByEmail.mockResolvedValue(verification);
     userRepository.save.mockResolvedValue(savedUser);
 
     const result = await useCase.execute(createDto);
 
-    expect(userRepository.findByEmail).toHaveBeenCalledWith(createDto.email);
+    expect(verificationRepository.findByEmail).toHaveBeenCalledWith(createDto.email);
     expect(userRepository.save).toHaveBeenCalledTimes(1);
 
     const savedArg = userRepository.save.mock.calls[0][0];
@@ -70,20 +95,73 @@ describe('CreateUserUseCase', () => {
     });
   });
 
-  it('lanza BadRequestException si el correo ya existe', async () => {
-    const existingUser = User.create(
-      'Existing User',
+  it('lanza BadRequestException si el correo ya está verificado', async () => {
+    const verification = Verification.create(
       createDto.email,
-      'existing123',
-      Role.CLIENT,
+      '123456',
+      'verification-id-1',
+      0,
+      0,
+      true, // isVerified = true
+      new Date(),
+      new Date(),
     );
 
-    userRepository.findByEmail.mockResolvedValue(existingUser);
+    verificationRepository.findByEmail.mockResolvedValue(verification);
 
     await expect(useCase.execute(createDto)).rejects.toThrow(
       new BadRequestException('El correo es invalido o ya está en uso'),
     );
 
     expect(userRepository.save).not.toHaveBeenCalled();
+  });
+
+  it('lanza BadRequestException si el código de verificación es incorrecto', async () => {
+    const now = new Date();
+    
+    const verification = Verification.create(
+      createDto.email,
+      '654321', // código diferente
+      'verification-id-1',
+      0,
+      0,
+      false,
+      new Date(now.getTime() + 5 * 60 * 1000),
+      now,
+    );
+
+    verificationRepository.findByEmail.mockResolvedValue(verification);
+    verificationRepository.save.mockResolvedValue(verification);
+
+    await expect(useCase.execute(createDto)).rejects.toThrow(
+      new BadRequestException('El código de verificación es incorrecto o inválido'),
+    );
+
+    expect(userRepository.save).not.toHaveBeenCalled();
+    expect(verificationRepository.save).toHaveBeenCalledTimes(1);
+  });
+
+  it('lanza BadRequestException si se excede el numero de intentos al validar el código', async () => {
+    const now = new Date();
+
+    const verification = Verification.create(
+      createDto.email,
+      '111111',
+      'verification-id-1',
+      3, // attempts at max to force incrementAttempts to throw
+      0,
+      false,
+      new Date(now.getTime() + 5 * 60 * 1000),
+      now,
+    );
+
+    verificationRepository.findByEmail.mockResolvedValue(verification);
+
+    await expect(useCase.execute(createDto)).rejects.toThrow(
+      new BadRequestException('Exedio el numero de intentos permitidos'),
+    );
+
+    expect(userRepository.save).not.toHaveBeenCalled();
+    expect(verificationRepository.save).not.toHaveBeenCalled();
   });
 });

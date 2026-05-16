@@ -7,8 +7,12 @@ import { UpdateUserUseCase } from './use-cases/update-user.use-case';
 import { GetUserByIdUseCase } from './use-cases/get-user-by-id.use-case';
 import { DeleteUserUseCase } from './use-cases/delete-user.use-case';
 import { GetAllUsersPaginationUseCase } from './use-cases/get-all-uses-pagination.use-case';
+import { VerificationRepository } from './repositories/verification.repository';
+import { SendEmailVerificationUseCase } from './use-cases/send-email-verification.use-case';
+import { EmailSenderModule } from 'src/email-sender/email-sender.module';
 
 @Module({
+  imports: [EmailSenderModule],
   controllers: [UserController],
   providers: [
     GetAllUsersUseCase,
@@ -17,10 +21,15 @@ import { GetAllUsersPaginationUseCase } from './use-cases/get-all-uses-paginatio
     CreateUserUseCase,
     UpdateUserUseCase,
     DeleteUserUseCase,
+    SendEmailVerificationUseCase,
     {
       provide: 'IUserRepository',
       useClass: UserRepository,
     },
+    {
+      provide: 'IVerificationRepository',
+      useClass: VerificationRepository,
+    }
   ],
   exports: ['IUserRepository'],
 })

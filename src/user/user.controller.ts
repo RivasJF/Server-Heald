@@ -9,18 +9,32 @@ import { UserCreateDto } from './dto/userCreateRequest.dto';
 import { UpdateUserUseCase } from './use-cases/update-user.use-case';
 import { GetUserByIdUseCase } from './use-cases/get-user-by-id.use-case';
 import { DeleteUserUseCase } from './use-cases/delete-user.use-case';
+import { GetAllUsersPaginationUseCase } from './use-cases/get-all-uses-pagination.use-case';
+import { SendEmailVerificationUseCase } from './use-cases/send-email-verification.use-case';
+import { VerificationCreateRequestDto } from './dto/verificationCreateRequest.dto';
 
 @ApiTags('Users')
 @Controller('user')
 export class UserController {
-  getAllUsersPaginationUseCase: any;
   constructor(
+    private readonly getAllUsersPaginationUseCase: GetAllUsersPaginationUseCase,
     private readonly getAllUsersUseCase: GetAllUsersUseCase,
     private readonly getUserByIdUseCase: GetUserByIdUseCase,
     private readonly createUserUseCase: CreateUserUseCase,
     private readonly updateUserUseCase: UpdateUserUseCase,
     private readonly deleteUserUseCase: DeleteUserUseCase,
+    private readonly sendEmailVerificationUseCase: SendEmailVerificationUseCase
   ) {}
+
+  @ApiOperation({ summary: 'Send a code to verify email' })
+  @ApiResponse({
+    status: 200,
+    description: 'Verification code sent'
+  })
+  @Post("send-code")
+  sendCode(@Body() verificationCreateRequestDto: VerificationCreateRequestDto): Promise<{ message: string }> {
+    return this.sendEmailVerificationUseCase.execute(verificationCreateRequestDto);
+  }
 
   @ApiOperation({ summary: 'Create a new user' })
   @ApiResponse({

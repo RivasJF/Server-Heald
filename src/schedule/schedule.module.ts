@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { ScheduleService } from './schedule.service';
 import { ScheduleController } from './schedule.controller';
 import { GetScheduleByUserIdUseCase } from './use-cases/get-schedule-by-user-id.use-case';
 import { ScheduleRepository } from './repositories/schedule.repository';
@@ -11,7 +10,6 @@ import { DoctorModule } from 'src/doctor/doctor.module';
   imports: [DoctorModule],
   controllers: [ScheduleController],
   providers: [
-    ScheduleService,
     GetScheduleByUserIdUseCase,
     CreateScheduleUseCase,
     UpdateScheduleUseCase,
