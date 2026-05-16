@@ -1,47 +1,47 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
 @Injectable()
 export class EmailSenderService {
-    private transporter: nodemailer.Transporter;
+
     private readonly logger = new Logger(EmailSenderService.name);
-    private readonly emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    private readonly resend: Resend;
 
     constructor() {
-        this.initializeTransporter();
-    }
 
-    private initializeTransporter(): void {
-        const emailUser = process.env.EMAIL_USER;
-        const emailPass = process.env.EMAIL_PASS;
+        const apiKey = process.env.RESEND_API_KEY;
 
-        if (!emailUser || !emailPass) {
-            this.logger.error('EMAIL_USER or EMAIL_PASS not configured');
-            throw new Error('Email configuration is missing');
+        if (!apiKey) {
+            this.logger.error('RESEND_API_KEY not configured');
+            throw new Error('Resend configuration is missing');
         }
 
-        this.transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: emailUser,
-                pass: emailPass,
-            },
-        });
+        this.resend = new Resend(apiKey);
     }
-    
-    async sendEmail(to: string, subject: string, body: string): Promise<void> {
 
-        const html = `
-            <h2>Verificación de cuenta</h2>
-            <p>${body}</p>
-            <p>Este código expira en 5 minutos.</p>
-        `;
+    async sendEmail(to: string, subject: string, body: string ): Promise<void> {
 
-        await this.transporter.sendMail({
-            from: `"Server Heald" <${process.env.EMAIL_USER}>`,
-            to,
-            subject,
-            html,
-        });
+        try {
+
+            const html = `
+                <h2>Verificación de cuenta</h2>
+                <p>${body}</p>
+                <p>Este código expira en 5 minutos.</p>
+            `;
+
+            const response = await this.resend.emails.send({
+                from: 'verification@rivascript.qzz.io',
+                to,
+                subject,
+                html,
+            });
+
+
+        } catch (error) {
+
+            this.logger.error('Failed to send email', error);
+
+            throw new Error('Could not send email');
+        }
     }
 }
