@@ -21,14 +21,16 @@ export class EmailSenderService {
         }
 
         this.transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
             auth: {
                 user: emailUser,
                 pass: emailPass,
             },
         });
     }
-    
+
     async sendEmail(to: string, subject: string, body: string): Promise<void> {
 
         const html = `
