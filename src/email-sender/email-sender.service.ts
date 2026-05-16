@@ -5,7 +5,6 @@ import * as nodemailer from 'nodemailer';
 export class EmailSenderService {
     private transporter: nodemailer.Transporter;
     private readonly logger = new Logger(EmailSenderService.name);
-    private readonly emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     constructor() {
         this.initializeTransporter();
@@ -27,6 +26,9 @@ export class EmailSenderService {
             auth: {
                 user: emailUser,
                 pass: emailPass,
+            },
+            tls: {
+                rejectUnauthorized: false,
             },
         });
     }
