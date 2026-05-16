@@ -71,6 +71,10 @@ export class UserCreateDto {
   @IsNotEmpty()
   role: Role;
 
+  @ApiProperty({
+    description: 'Verification code sent to the user email',
+    example: '123456',
+  })
   @IsString()
   @IsNotEmpty()
   code: string;
