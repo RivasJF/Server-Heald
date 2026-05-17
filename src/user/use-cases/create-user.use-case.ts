@@ -39,6 +39,11 @@ export class CreateUserUseCase {
       throw new BadRequestException('El código de verificación es incorrecto o inválido');
     }
 
+    const verifiedUser = await this.verificationRepository.findByEmail(existingUser.getEmail());
+
+    verifiedUser.markAsVerified();
+    await this.verificationRepository.save(verifiedUser);
+
     const user = User.create(
       createUserDto.name,
       createUserDto.email,
