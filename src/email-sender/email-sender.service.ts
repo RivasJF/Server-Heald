@@ -29,13 +29,12 @@ export class EmailSenderService {
                 <p>Este código expira en 5 minutos.</p>
             `;
 
-            // const response = await this.resend.emails.send({
-            //     from: 'verification@rivascript.qzz.io',
-            //     to,
-            //     subject,
-            //     html,
-            // });
-            this.logger.log(`Email sent to ${to} with subject "${subject}" and body "${body}"`);
+            const response = await this.resend.emails.send({
+                from: 'verification@rivascript.qzz.io',
+                to,
+                subject,
+                html,
+            });
 
 
         } catch (error) {
