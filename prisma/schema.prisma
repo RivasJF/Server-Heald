@@ -150,3 +150,13 @@ model Verification {
   isVerified     Boolean  @default(false)
   createdAt      DateTime @default(now())
 }
+
+model PasswordReset {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  code      String
+  expireAt  DateTime
+  attempts  Int      @default(0)
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
