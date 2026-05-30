@@ -12,6 +12,11 @@ import { DeleteUserUseCase } from './use-cases/delete-user.use-case';
 import { GetAllUsersPaginationUseCase } from './use-cases/get-all-uses-pagination.use-case';
 import { SendEmailVerificationUseCase } from './use-cases/send-email-verification.use-case';
 import { VerificationCreateRequestDto } from './dto/verificationCreateRequest.dto';
+import { ResetPasswordUseCase } from './use-cases/reset-password.use-case';
+import { ValidateCodePasswordResetUseCase } from './use-cases/validate-code-reset-password.use-case';
+import { SendEmailPasswordResetUseCase } from './use-cases/send-email-password-reset.use-case';
+import { CodeValidationRequestDto } from './dto/codeValidationRequest.dto';
+import { ResetPasswordDto } from './dto/resetPasswordRequest.dto';
 
 @ApiTags('Users')
 @Controller('user')
@@ -23,7 +28,10 @@ export class UserController {
     private readonly createUserUseCase: CreateUserUseCase,
     private readonly updateUserUseCase: UpdateUserUseCase,
     private readonly deleteUserUseCase: DeleteUserUseCase,
-    private readonly sendEmailVerificationUseCase: SendEmailVerificationUseCase
+    private readonly sendEmailVerificationUseCase: SendEmailVerificationUseCase,
+    private readonly sendEmailPasswordResetUseCase: SendEmailPasswordResetUseCase,
+    private readonly validateCodePasswordResetUseCase: ValidateCodePasswordResetUseCase,
+    private readonly resetPasswordUseCase: ResetPasswordUseCase,
   ) {}
 
   @ApiOperation({ summary: 'Send a code to verify email' })
@@ -67,6 +75,36 @@ export class UserController {
   @Get(':page/:pageSize')
   findAllPagination(@Param('page') page:number, @Param('pageSize') pageSize:number) {
     return this.getAllUsersPaginationUseCase.execute(page, pageSize);
+  }
+
+  @ApiOperation({ summary: 'Send a code to reset password' })
+  @ApiResponse({
+    status: 200,
+    description: 'Verification code sent'
+  })
+  @Post("send-code-reset-password")
+  sendEmailCode(@Body() verificationCreateRequestDto: VerificationCreateRequestDto): Promise<{ message: string }> {
+    return this.sendEmailPasswordResetUseCase.execute(verificationCreateRequestDto);
+  }
+
+  @ApiOperation({ summary: 'Validate the reset password code' })
+  @ApiResponse({
+    status: 200,
+    description: 'Code is valid'
+  })
+  @Post("validate-code-reset-password")
+  validateCodeResetPassword(@Body() codeValidationRequestDto: CodeValidationRequestDto): Promise<{ message: string }> {
+    return this.validateCodePasswordResetUseCase.execute(codeValidationRequestDto);
+  }
+
+  @ApiOperation({ summary: 'Reset the user password' })
+  @ApiResponse({
+    status: 200,
+    description: 'Password reset successfully'
+  })
+  @Patch("reset-password")
+  resetPassword(@Body() resetPasswordDto: ResetPasswordDto): Promise<{ message: string }> {
+    return this.resetPasswordUseCase.execute(resetPasswordDto);
   }
 
   @ApiOperation({ summary: 'Get a user' })

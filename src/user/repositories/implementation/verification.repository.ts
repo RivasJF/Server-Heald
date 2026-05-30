@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Verification } from '../entities/verification.entity';
-import { IVerificationRepository } from './verification.repository.imp';
+import { Verification } from '../../entities/verification.entity';
+import { IVerificationRepository } from '../verification.repository.imp';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Verification as VerificationSchema, User as UserSchema } from 'generated/prisma';
 

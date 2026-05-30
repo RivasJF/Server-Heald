@@ -89,6 +89,12 @@ export class User {
     }
   }
 
+  public resetPassword(newPassword: string) {
+    if (newPassword.length < 6)
+      throw new Error('Password must be at least 6 characters long');
+    this.password = newPassword;
+  }
+
   public static validateEmail(email: string) {
     const emailRegex =
       /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
