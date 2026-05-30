@@ -21,7 +21,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('API for Heald Project')
     .setDescription('The Heald Project API, developed with NestJS and Prisma')
-    .setVersion('1.3.0')
+    .setVersion('1.4.0')
     .addTag('Users')
     .addTag('Auth')
     .addTag('Doctors')
